@@ -1,7 +1,7 @@
 # Project Plan — Home & Electric Appliances Online Shop
 
-> Status: **Approved for planning** · Last updated: 2026-10-19
-> Related: [DATABASE.md](DATABASE.md) · [Architecture Decision Records](adr/README.md)
+> Status: **Approved for planning** · Last updated: 2026-10-21
+> Related: [DATABASE.md](DATABASE.md) · [BRAND.md](BRAND.md) · [WIREFRAMES.md](WIREFRAMES.md) · [Architecture Decision Records](adr/README.md)
 
 ---
 
@@ -83,7 +83,7 @@ An online shop selling home and electric appliances in **Egypt**, operated by a 
 |---|---|
 | Next.js (App Router, standalone output) | Server-rendered pages for SEO and speed |
 | Tailwind CSS (logical properties) | Styling that works for RTL and LTR |
-| shadcn/ui (Radix) | Accessible components we own |
+| shadcn/ui (Radix) + Lucide icons | Accessible components we own |
 | next-intl | `/ar` and `/en` routing + translations |
 | TanStack Query | Client-side data (cart) |
 | React Hook Form + Zod | Forms |
@@ -143,6 +143,7 @@ shop-website/
 ├── packages/
 │   ├── contracts/           # Zod schemas + types (API DTOs, enums, permissions)
 │   ├── api-client/          # Typed fetch client built on contracts
+│   ├── brand/               # Name, logo slots, colour tokens, Tailwind preset (ADR-0021)
 │   └── config/              # tsconfig / eslint / prettier presets
 ├── infra/
 │   ├── docker-compose.dev.yml
@@ -396,8 +397,11 @@ Each phase ends with a deploy to production (behind basic auth until launch).
 ### Phase 0 — Decisions & design
 - [x] Requirements and stack agreed
 - [x] PLAN.md, DATABASE.md, ADRs
-- [ ] Wireframes: home, category listing, product page, cart, checkout, tracking, dashboard home, order detail, driver view
-- [ ] Brand basics: shop name, logo, colours (needed before UI work)
+- [x] Low-fidelity wireframes for storefront and dashboard ([WIREFRAMES.md](WIREFRAMES.md))
+- [x] Brand system with swappable name/logo/colours ([BRAND.md](BRAND.md), ADR-0021)
+- [ ] Choose palette (A / B / C)
+- [ ] Visual mockups of key pages in the chosen palette
+- [ ] Shop name + logo (can come later: placeholders until then, production build blocks them)
 
 ### Phase 1 — Foundation
 - [ ] Monorepo, tooling, shared config, CI pipeline

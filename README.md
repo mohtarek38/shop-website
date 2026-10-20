@@ -8,6 +8,8 @@ Online shop for home and electric appliances in Egypt: Arabic/English storefront
 
 - [Project plan](docs/PLAN.md): scope, stack, architecture, flows, phases
 - [Database design](docs/DATABASE.md)
+- [Brand system](docs/BRAND.md)
+- [Wireframes](docs/WIREFRAMES.md)
 - [Architecture Decision Records](docs/adr/README.md)
 
 ## Stack (summary)

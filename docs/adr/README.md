@@ -26,3 +26,4 @@ Copy [template.md](template.md) for new records. Number them sequentially.
 | [0018](0018-images-processed-at-upload.md) | Images processed at upload, served from R2 | Accepted |
 | [0019](0019-printable-html-invoices.md) | Printable HTML invoices instead of a PDF library | Accepted |
 | [0020](0020-order-payment-state-machines-and-events.md) | Separate order/payment state machines + domain events | Accepted |
+| [0021](0021-brand-as-configuration.md) | Brand as configuration (`packages/brand`) | Accepted |
