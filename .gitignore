@@ -48,3 +48,6 @@ apps/*/public/brand/
 # Next.js generated
 apps/web/next-env.d.ts
 apps/web/.next/
+
+# API dev-server output (separate from the production build in dist/)
+apps/api/.dev-dist/

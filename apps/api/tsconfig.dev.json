@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    // `pnpm dev` compiles here, so `pnpm build` (which empties dist/) can't crash a running dev server.
+    "outDir": "./.dev-dist"
+  }
+}
