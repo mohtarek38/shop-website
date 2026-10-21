@@ -16,6 +16,9 @@ import { ProductsRepository } from '../src/modules/catalog/products.repository.j
 import { ProductsService } from '../src/modules/catalog/products.service.js';
 import { createAuth } from '../src/modules/identity/auth.js';
 import { ensureStaffUser, seedPermissionsAndRoles } from '../src/modules/identity/identity.seed.js';
+import { MediaRepository } from '../src/modules/media/media.repository.js';
+import { MediaService } from '../src/modules/media/media.service.js';
+import { LocalStorage } from '../src/modules/media/storage/local-storage.js';
 import { loadConfig } from '../src/shared/config/config.js';
 import { PrismaService } from '../src/shared/database/prisma.service.js';
 import { seedSampleCatalog } from './sample-catalog.js';
@@ -47,7 +50,17 @@ try {
     const result = await seedSampleCatalog({
       categories: new CategoriesService(categoriesRepo),
       brands: new BrandsService(brandsRepo),
-      products: new ProductsService(new ProductsRepository(prisma), categoriesRepo, brandsRepo),
+      products: new ProductsService(
+        new ProductsRepository(prisma),
+        categoriesRepo,
+        brandsRepo,
+        // Sample products have no images, so storage is never written here.
+        new MediaService(
+          new MediaRepository(prisma),
+          new LocalStorage(config.LOCAL_STORAGE_DIR),
+          config,
+        ),
+      ),
     });
     console.warn(
       result.skipped

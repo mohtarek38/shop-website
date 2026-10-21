@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { MediaModule } from '../media/index.js';
 import { BrandsAdminController } from './brands.admin.controller.js';
 import { BrandsRepository } from './brands.repository.js';
 import { BrandsService } from './brands.service.js';
@@ -10,6 +11,7 @@ import { ProductsRepository } from './products.repository.js';
 import { ProductsService } from './products.service.js';
 
 @Module({
+  imports: [MediaModule],
   controllers: [CategoriesAdminController, BrandsAdminController, ProductsAdminController],
   providers: [
     CategoriesRepository,

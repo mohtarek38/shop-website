@@ -258,6 +258,7 @@ model Product {
   category Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   brand    Brand            @relation(fields: [brandId], references: [id], onDelete: Restrict)
   variants ProductVariant[]
+  images   ProductMedia[]
 
   @@index([status, categoryId])
   @@index([brandId])
@@ -293,4 +294,52 @@ model ProductVariant {
   @@index([productId])
   @@index([modelNumber])
   @@map("product_variant")
+}
+
+// ─── media (DATABASE.md §7, ADR-0018) ──────────────────────────────────────
+
+enum MediaBucket {
+  /// Product images and banners, served publicly (R2 + CDN in production)
+  public
+  /// Transfer receipts; served only through short-lived signed URLs
+  private
+
+  @@map("media_bucket")
+}
+
+model Media {
+  id           String      @id @default(uuid(7)) @db.Uuid
+  bucket       MediaBucket
+  /// Key of the original file in storage
+  storageKey   String      @unique @map("storage_key")
+  /// Resized WebP keys: { thumb, md, lg }
+  variants     Json        @default("{}")
+  mimeType     String      @map("mime_type")
+  width        Int?
+  height       Int?
+  sizeBytes    Int         @map("size_bytes")
+  originalName String?     @map("original_name")
+  uploadedById String?     @map("uploaded_by_id") @db.Uuid
+  createdAt    DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  productImages ProductMedia[]
+
+  @@map("media")
+}
+
+/// A product's images, in display order (the first is the main image).
+model ProductMedia {
+  id        String @id @default(uuid(7)) @db.Uuid
+  productId String @map("product_id") @db.Uuid
+  mediaId   String @map("media_id") @db.Uuid
+  /// LocalizedText; falls back to the product name
+  alt       Json?
+  sortOrder Int    @default(0) @map("sort_order")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  media   Media   @relation(fields: [mediaId], references: [id], onDelete: Restrict)
+
+  @@unique([productId, mediaId])
+  @@index([mediaId])
+  @@map("product_media")
 }

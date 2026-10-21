@@ -3,15 +3,21 @@ import type { ProductStatus } from '@shop/contracts';
 import { Prisma } from '../../generated/prisma/client.js';
 import { PrismaService } from '../../shared/database/prisma.service.js';
 
+const mediaSelect = {
+  select: { id: true, storageKey: true, variants: true, width: true, height: true },
+} as const;
+
 const productInclude = {
   category: { select: { id: true, slug: true, name: true } },
   brand: { select: { id: true, slug: true, name: true } },
   variants: { orderBy: [{ sortOrder: 'asc' }, { sku: 'asc' }] },
+  images: { orderBy: { sortOrder: 'asc' }, include: { media: mediaSelect } },
 } satisfies Prisma.ProductInclude;
 
 const listInclude = {
   category: { select: { id: true, name: true } },
   brand: { select: { id: true, name: true } },
+  images: { orderBy: { sortOrder: 'asc' }, take: 1, include: { media: mediaSelect } },
   variants: {
     select: { price: true, salePrice: true, saleStartsAt: true, saleEndsAt: true, isActive: true },
   },
@@ -34,6 +40,11 @@ export interface ProductWrite {
   seoTitle: Prisma.InputJsonValue | null;
   seoDescription: Prisma.InputJsonValue | null;
   searchText: string;
+}
+
+export interface ImageWrite {
+  mediaId: string;
+  alt: Prisma.InputJsonValue | null;
 }
 
 export interface VariantWrite {
@@ -118,21 +129,34 @@ export class ProductsRepository {
     return { slugTaken: Boolean(slugOwner), takenSkus: new Set(variants.map((v) => v.sku)) };
   }
 
-  create(data: ProductWrite, variants: VariantWrite[]): Promise<ProductRow> {
+  create(data: ProductWrite, variants: VariantWrite[], images: ImageWrite[]): Promise<ProductRow> {
     return this.prisma.product.create({
       data: {
         ...withJson(data),
         variants: { create: variants.map(({ id: _id, ...v }) => v) },
+        images: { create: images.map(imageData) },
       },
       include: productInclude,
     });
   }
 
-  /** Updates the product and syncs variants: update by id, create new, delete missing. */
-  update(id: string, data: ProductWrite, variants: VariantWrite[]): Promise<ProductRow> {
+  /**
+   * Updates the product, replaces its image list, and syncs variants: update by id,
+   * create new, delete missing.
+   */
+  update(
+    id: string,
+    data: ProductWrite,
+    variants: VariantWrite[],
+    images: ImageWrite[],
+  ): Promise<ProductRow> {
     const keepIds = variants.flatMap((v) => (v.id ? [v.id] : []));
     return this.prisma.$transaction(async (tx) => {
       await tx.product.update({ where: { id }, data: withJson(data) });
+      await tx.productMedia.deleteMany({ where: { productId: id } });
+      await tx.productMedia.createMany({
+        data: images.map((image, index) => ({ ...imageData(image, index), productId: id })),
+      });
       // Phase 3: variants referenced by orders must be deactivated instead of deleted.
       await tx.productVariant.deleteMany({ where: { productId: id, id: { notIn: keepIds } } });
       for (const { id: variantId, ...variant } of variants) {
@@ -170,6 +194,11 @@ export class ProductsRepository {
         WHERE "id" = ${id}::uuid`,
     ]);
   }
+}
+
+/** The list order is the display order; the first image is the main one. */
+function imageData(image: ImageWrite, sortOrder: number) {
+  return { mediaId: image.mediaId, alt: image.alt ?? Prisma.DbNull, sortOrder };
 }
 
 function withJson(data: ProductWrite) {

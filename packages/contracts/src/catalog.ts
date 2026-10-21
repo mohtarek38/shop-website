@@ -5,6 +5,7 @@ import {
   localizedTextSchema,
   optionalLocalizedTextSchema,
 } from './localized-text';
+import type { MediaAsset } from './media';
 import { piastersSchema } from './money';
 
 /** English, lowercase, hyphenated: `samsung-rt38-no-frost-fridge` (ADR-0010). */
@@ -185,6 +186,12 @@ export const variantInputSchema = z
   });
 export type VariantInput = z.input<typeof variantInputSchema>;
 
+/** A product image: an uploaded media id plus optional alt text. The first is the main image. */
+export const productImageInputSchema = z.object({
+  mediaId: z.uuid(),
+  alt: optionalLocalizedTextSchema.nullable().default(null),
+});
+
 export const productInputSchema = z.object({
   categoryId: z.uuid(),
   brandId: z.uuid(),
@@ -200,6 +207,14 @@ export const productInputSchema = z.object({
   warrantyMonths: z.number().int().min(0).max(240).nullable().default(null),
   seoTitle: optionalLocalizedTextSchema.nullable().default(null),
   seoDescription: optionalLocalizedTextSchema.nullable().default(null),
+  /** In display order; the first is the main image. */
+  images: z
+    .array(productImageInputSchema)
+    .max(20)
+    .default([])
+    .refine((list) => new Set(list.map((i) => i.mediaId)).size === list.length, {
+      message: 'duplicate_images',
+    }),
   /** In display order; the first active variant is the default one. */
   variants: z
     .array(variantInputSchema)
@@ -263,16 +278,21 @@ export interface Product {
   seoDescription: LocalizedText | null;
   category: { id: string; slug: string; name: LocalizedText };
   brand: { id: string; slug: string; name: LocalizedText };
+  images: ProductImage[];
   variants: ProductVariant[];
   publishedAt: string | null;
   updatedAt: string;
 }
+
+export type ProductImage = MediaAsset & { alt: LocalizedText | null };
 
 export interface ProductListItem {
   id: string;
   slug: string;
   status: ProductStatus;
   name: LocalizedText;
+  /** Main image thumbnail URL. */
+  thumbnail: string | null;
   category: { id: string; name: LocalizedText };
   brand: { id: string; name: LocalizedText };
   variantCount: number;

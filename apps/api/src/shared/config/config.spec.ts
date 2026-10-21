@@ -29,6 +29,14 @@ describe('loadConfig', () => {
     expect(config.AUTH_TRUSTED_ORIGINS).toEqual(['http://localhost:3000', 'http://localhost:5173']);
   });
 
+  it('uses local media storage by default and requires R2 settings for r2', () => {
+    expect(loadConfig(validEnv)).toMatchObject({
+      STORAGE_DRIVER: 'local',
+      MEDIA_PUBLIC_URL: '/api/media/files',
+    });
+    expect(() => loadConfig({ ...validEnv, STORAGE_DRIVER: 'r2' })).toThrow(/R2_ACCOUNT_ID/);
+  });
+
   it('fails fast with a readable message', () => {
     expect(() => loadConfig({})).toThrow(/DATABASE_URL/);
     expect(() => loadConfig({ DATABASE_URL: 'mysql://x' })).toThrow(/DATABASE_URL/);

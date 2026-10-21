@@ -51,3 +51,6 @@ apps/web/.next/
 
 # API dev-server output (separate from the production build in dist/)
 apps/api/.dev-dist/
+
+# Local media storage (STORAGE_DRIVER=local)
+apps/api/.storage/

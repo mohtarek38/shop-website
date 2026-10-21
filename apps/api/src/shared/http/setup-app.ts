@@ -3,6 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import helmet from 'helmet';
 import { mountAuth } from '../../modules/identity/index.js';
+import { mountMedia } from '../../modules/media/index.js';
 import { APP_CONFIG, type AppConfig } from '../config/config.js';
 import { ProblemDetailsFilter } from './problem-details.filter.js';
 
@@ -26,6 +27,7 @@ export function setupApp(app: INestApplication): void {
     }),
   );
   mountAuth(app);
+  mountMedia(app, config);
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
   app.useGlobalFilters(new ProblemDetailsFilter());

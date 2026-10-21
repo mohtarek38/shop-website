@@ -3,11 +3,13 @@ import type {
   Category,
   CategoryAttribute,
   LocalizedText,
+  MediaAsset,
   Product,
   ProductListItem,
   ProductVariant,
   Specs,
 } from '@shop/contracts';
+import type { MediaRecord } from '../media/index.js';
 import type { BrandRow } from './brands.repository.js';
 import type { CategoryRow } from './categories.repository.js';
 import { currentPrice } from './pricing.js';
@@ -91,7 +93,10 @@ export function toVariant(row: VariantRow, now = new Date()): ProductVariant {
   };
 }
 
-export function toProduct(row: ProductRow): Product {
+/** Builds public image URLs (MediaService.toAsset). */
+export type AssetFn = (media: MediaRecord) => MediaAsset;
+
+export function toProduct(row: ProductRow, asset: AssetFn): Product {
   const now = new Date();
   return {
     id: row.id,
@@ -107,13 +112,14 @@ export function toProduct(row: ProductRow): Product {
     seoDescription: textOrNull(row.seoDescription),
     category: { id: row.category.id, slug: row.category.slug, name: text(row.category.name) },
     brand: { id: row.brand.id, slug: row.brand.slug, name: text(row.brand.name) },
+    images: row.images.map((image) => ({ ...asset(image.media), alt: textOrNull(image.alt) })),
     variants: row.variants.map((v) => toVariant(v, now)),
     publishedAt: row.publishedAt?.toISOString() ?? null,
     updatedAt: row.updatedAt.toISOString(),
   };
 }
 
-export function toProductListItem(row: ProductListRow): ProductListItem {
+export function toProductListItem(row: ProductListRow, asset: AssetFn): ProductListItem {
   const now = new Date();
   const prices = row.variants.filter((v) => v.isActive).map((v) => currentPrice(v, now));
   return {
@@ -121,6 +127,7 @@ export function toProductListItem(row: ProductListRow): ProductListItem {
     slug: row.slug,
     status: row.status,
     name: text(row.name),
+    thumbnail: row.images[0] ? asset(row.images[0].media).urls.thumb : null,
     category: { id: row.category.id, name: text(row.category.name) },
     brand: { id: row.brand.id, name: text(row.brand.name) },
     variantCount: row.variants.length,

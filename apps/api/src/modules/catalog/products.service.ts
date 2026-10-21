@@ -12,11 +12,12 @@ import {
   splitAttributes,
 } from '@shop/contracts';
 import type { z } from 'zod';
+import { type MediaRecord, MediaService } from '../media/index.js';
 import { BrandsRepository } from './brands.repository.js';
 import { CategoriesRepository } from './categories.repository.js';
 import { alreadyExists, invalidField, nestedValidationError } from './errors.js';
 import { effectiveAttributes, toProduct, toProductListItem } from './mappers.js';
-import { ProductsRepository, type VariantWrite } from './products.repository.js';
+import { type ImageWrite, ProductsRepository, type VariantWrite } from './products.repository.js';
 import { buildSearchText } from './search-text.js';
 
 type ProductInput = z.output<typeof productInputSchema>;
@@ -35,7 +36,11 @@ export class ProductsService {
     private readonly products: ProductsRepository,
     private readonly categories: CategoriesRepository,
     private readonly brands: BrandsRepository,
+    private readonly media: MediaService,
   ) {}
+
+  /** Public image URLs for a stored image. */
+  private readonly asset = (row: MediaRecord) => this.media.toAsset(row);
 
   async list(query: ProductListQuery): Promise<Paginated<ProductListItem>> {
     let categoryIds: string[] | undefined;
@@ -51,7 +56,7 @@ export class ProductsService {
       query.pageSize,
     );
     return {
-      items: rows.map(toProductListItem),
+      items: rows.map((row) => toProductListItem(row, this.asset)),
       page: query.page,
       pageSize: query.pageSize,
       total,
@@ -59,14 +64,15 @@ export class ProductsService {
   }
 
   async get(id: string): Promise<Product> {
-    return toProduct(await this.findOrThrow(id));
+    return toProduct(await this.findOrThrow(id), this.asset);
   }
 
   /** New products start as drafts; publishing is a separate permission. */
   async create(input: ProductInput): Promise<Product> {
     const prepared = await this.prepare(input);
     await this.assertAvailable(prepared.product.slug, prepared.variants);
-    return toProduct(await this.products.create(prepared.product, prepared.variants));
+    const row = await this.products.create(prepared.product, prepared.variants, prepared.images);
+    return toProduct(row, this.asset);
   }
 
   async update(id: string, input: ProductInput): Promise<Product> {
@@ -79,7 +85,13 @@ export class ProductsService {
     });
     const prepared = await this.prepare(input);
     await this.assertAvailable(prepared.product.slug, prepared.variants, id);
-    return toProduct(await this.products.update(id, prepared.product, prepared.variants));
+    const row = await this.products.update(
+      id,
+      prepared.product,
+      prepared.variants,
+      prepared.images,
+    );
+    return toProduct(row, this.asset);
   }
 
   async setStatus(id: string, status: ProductStatus): Promise<Product> {
@@ -89,7 +101,7 @@ export class ProductsService {
     }
     const publishedAt =
       status === 'active' ? (current.publishedAt ?? new Date()) : current.publishedAt;
-    return toProduct(await this.products.setStatus(id, status, publishedAt));
+    return toProduct(await this.products.setStatus(id, status, publishedAt), this.asset);
   }
 
   async remove(id: string): Promise<void> {
@@ -126,6 +138,10 @@ export class ProductsService {
     const brand = await this.brands.findById(input.brandId);
     if (!brand) throw invalidField(['brandId'], 'not_found');
 
+    const missingImages = await this.media.missingIds(input.images.map((i) => i.mediaId));
+    const badImage = input.images.findIndex((i) => missingImages.has(i.mediaId));
+    if (badImage >= 0) throw invalidField(['images', badImage, 'mediaId'], 'not_found');
+
     const { productAttributes, variantAttributes } = splitAttributes<CategoryAttribute>(
       effectiveAttributes(category, parent),
     );
@@ -158,6 +174,11 @@ export class ProductsService {
       };
     });
 
+    const images: ImageWrite[] = input.images.map((image) => ({
+      mediaId: image.mediaId,
+      alt: image.alt,
+    }));
+
     return {
       product: {
         categoryId: input.categoryId,
@@ -179,6 +200,7 @@ export class ProductsService {
         }),
       },
       variants,
+      images,
     };
   }
 }

@@ -4,6 +4,7 @@ export * from './http';
 export * from './identity';
 export * from './locale';
 export * from './localized-text';
+export * from './media';
 export * from './money';
 export * from './permissions';
 export * from './phone';
