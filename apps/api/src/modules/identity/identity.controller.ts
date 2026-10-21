@@ -1,6 +1,6 @@
-import { Controller, Get, HttpCode, HttpStatus, Post, Req, Res } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Patch, Post, Req, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { type Me, registerCustomerSchema } from '@shop/contracts';
+import { type Me, registerCustomerSchema, updateMeSchema } from '@shop/contracts';
 import { fromNodeHeaders } from 'better-auth/node';
 import type { Request, Response } from 'express';
 import type { z } from 'zod';
@@ -31,5 +31,14 @@ export class IdentityController {
   @Get('me')
   me(@CurrentAuth() auth: AuthContext): Promise<Me> {
     return this.identity.getMe(auth);
+  }
+
+  /** Saves the user's language (dashboard UI and customer messages). */
+  @Patch('me')
+  updateMe(
+    @CurrentAuth() auth: AuthContext,
+    @ZodBody(updateMeSchema) body: z.output<typeof updateMeSchema>,
+  ): Promise<Me> {
+    return this.identity.updateMe(auth, body);
   }
 }

@@ -33,6 +33,10 @@ export const meSchema = z.object({
 });
 export type Me = z.infer<typeof meSchema>;
 
+/** Fields a signed-in user can change on their own account. */
+export const updateMeSchema = z.object({ locale: localeSchema });
+export type UpdateMeInput = z.infer<typeof updateMeSchema>;
+
 /** Phone-only accounts get a non-deliverable address; email senders must skip these. */
 export const SYNTHETIC_EMAIL_DOMAIN = 'phone.invalid';
 

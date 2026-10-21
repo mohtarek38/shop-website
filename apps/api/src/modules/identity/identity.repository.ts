@@ -14,6 +14,7 @@ export class IdentityRepository {
       where: { id: userId },
       select: {
         type: true,
+        locale: true,
         disabledAt: true,
         roles: {
           select: {
@@ -33,7 +34,13 @@ export class IdentityRepository {
           ),
         ];
 
-    return { type: user.type, disabledAt: user.disabledAt, roles: roleKeys, permissions };
+    return {
+      type: user.type,
+      locale: user.locale,
+      disabledAt: user.disabledAt,
+      roles: roleKeys,
+      permissions,
+    };
   }
 
   async setUserLocale(userId: string, locale: 'ar' | 'en'): Promise<void> {

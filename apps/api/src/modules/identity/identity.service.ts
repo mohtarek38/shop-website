@@ -10,6 +10,7 @@ import {
   type Me,
   registerCustomerSchema,
   syntheticEmailForPhone,
+  type UpdateMeInput,
 } from '@shop/contracts';
 import { APIError } from 'better-auth/api';
 import type { z } from 'zod';
@@ -51,17 +52,22 @@ export class IdentityService {
     }
   }
 
+  async updateMe(auth: AuthContext, input: UpdateMeInput): Promise<Me> {
+    await this.identity.setUserLocale(auth.user.id, input.locale);
+    return this.getMe(auth);
+  }
+
   async getMe(auth: AuthContext): Promise<Me> {
     const access = await this.identity.findUserAccess(auth.user.id);
     if (!access) throw new NotFoundException();
-    const user = auth.user as AuthContext['user'] & { username?: string | null; locale?: string };
+    const user = auth.user as AuthContext['user'] & { username?: string | null };
     return {
       id: user.id,
       name: user.name,
       email: isSyntheticEmail(user.email) ? null : user.email,
       phone: user.username ?? null,
       type: access.type,
-      locale: user.locale === 'en' ? 'en' : 'ar',
+      locale: access.locale,
       roles: access.roles,
       permissions: access.permissions,
     };

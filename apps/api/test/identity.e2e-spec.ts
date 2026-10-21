@@ -183,6 +183,14 @@ describe('Identity (e2e)', () => {
       await clerk.get('/api/v1/test-staff/settings').expect(403);
     });
 
+    it('lets a user change their language', async () => {
+      const owner = await signInStaff('owner@test.local');
+      const res = await owner.patch('/api/v1/me').send({ locale: 'en' }).expect(200);
+      expect(res.body.locale).toBe('en');
+      await owner.patch('/api/v1/me').send({ locale: 'fr' }).expect(400);
+      expect((await owner.get('/api/v1/me')).body.locale).toBe('en');
+    });
+
     it('gives the owner every permission', async () => {
       const owner = await signInStaff('owner@test.local');
       await owner.get('/api/v1/test-staff/settings').expect(200);
