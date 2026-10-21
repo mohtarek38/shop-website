@@ -85,7 +85,8 @@
     "confirmTitle": "Are you sure?",
     "readOnly": "You have view-only access.",
     "egp": "EGP",
-    "sortOrder": "Sort order"
+    "sortOrder": "Sort order",
+    "close": "Close"
   },
   "errors": {
     "invalid": "Invalid value",
@@ -119,7 +120,15 @@
     "image_too_small": "The image is too small (at least 300px)",
     "image_too_large": "The image is larger than 10 MB",
     "file_required": "Choose a file",
-    "duplicate_images": "The same image is added twice"
+    "duplicate_images": "The same image is added twice",
+    "insufficient_stock": "More than is available",
+    "below_reserved": "Stock can't go below the reserved quantity",
+    "quantity_required": "Enter a whole number",
+    "reason_required": "Enter a reason",
+    "same_location": "Choose a different location",
+    "default_required": "There must be a default location. Make another location the default first",
+    "default_must_be_active": "The default location must be active",
+    "invalid_location_code": "Use uppercase letters, numbers and hyphens (2 to 20)"
   },
   "status": {
     "draft": "Draft",
@@ -245,5 +254,70 @@
     "moveLater": "Move later",
     "hint": "JPEG, PNG, WebP or AVIF, up to 10 MB and at least 300px. You can drag and drop images here.",
     "tooMany": "A product can have up to {{max}} images."
+  },
+  "inventory": {
+    "tabs": {
+      "stock": "Stock",
+      "locations": "Locations"
+    },
+    "searchPlaceholder": "Search by name or SKU",
+    "lowStockOnly": "Low or out of stock only",
+    "totalAvailable": "Available",
+    "actions": "Actions",
+    "change": "Change stock",
+    "history": "Stock history",
+    "empty": "No matching variants.",
+    "outOfStock": "Out of stock",
+    "low": "Low",
+    "inStock": "In stock",
+    "reservedShort": "{{count}} reserved",
+    "action": "Action",
+    "modes": {
+      "receive": "Receive",
+      "adjust": "Count",
+      "write_off": "Write off",
+      "transfer": "Transfer",
+      "threshold": "Low-stock alert"
+    },
+    "modeHints": {
+      "receive": "Add units that arrived.",
+      "adjust": "Enter the actual quantity after counting; the difference is recorded.",
+      "write_off": "Remove damaged or lost units.",
+      "transfer": "Move units from one location to another.",
+      "threshold": "Warn when available stock reaches this number or less."
+    },
+    "location": "Location",
+    "from": "From",
+    "to": "To",
+    "currentAt": "On hand: {{onHand}} · Available: {{available}}",
+    "quantity": "Quantity",
+    "countedQuantity": "Counted quantity",
+    "reason": "Reason",
+    "threshold": "Alert at",
+    "thresholdHint": "Leave empty to turn the alert off.",
+    "noHistory": "No stock changes yet.",
+    "date": "Date",
+    "after": "Balance after",
+    "by": "By",
+    "system": "System",
+    "newLocation": "New location",
+    "locationName": "Location name",
+    "code": "Code",
+    "codeHint": "Letters, numbers and hyphens, like MAIN",
+    "address": "Address",
+    "default": "Default",
+    "makeDefault": "Default location (orders reserve from here first)",
+    "available": "Available: {{count}}"
+  },
+  "movementTypes": {
+    "receive": "Received",
+    "adjust": "Counted",
+    "write_off": "Written off",
+    "transfer_out": "Transferred out",
+    "transfer_in": "Transferred in",
+    "reserve": "Reserved",
+    "release": "Released",
+    "fulfil": "Delivered",
+    "return": "Returned"
   }
 }

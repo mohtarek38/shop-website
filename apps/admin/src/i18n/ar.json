@@ -85,7 +85,8 @@
     "confirmTitle": "هل أنت متأكد؟",
     "readOnly": "لديك صلاحية العرض فقط.",
     "egp": "ج.م",
-    "sortOrder": "الترتيب"
+    "sortOrder": "الترتيب",
+    "close": "إغلاق"
   },
   "errors": {
     "invalid": "قيمة غير صالحة",
@@ -119,7 +120,15 @@
     "image_too_small": "الصورة صغيرة جدًا (300 بكسل على الأقل)",
     "image_too_large": "الصورة أكبر من 10 ميجابايت",
     "file_required": "اختر ملفًا",
-    "duplicate_images": "الصورة مضافة أكثر من مرة"
+    "duplicate_images": "الصورة مضافة أكثر من مرة",
+    "insufficient_stock": "الكمية أكبر من المتاح",
+    "below_reserved": "لا يمكن أن يقل الرصيد عن الكمية المحجوزة",
+    "quantity_required": "أدخل كمية صحيحة",
+    "reason_required": "اكتب السبب",
+    "same_location": "اختر موقعًا مختلفًا",
+    "default_required": "يجب أن يكون هناك موقع افتراضي. اجعل موقعًا آخر افتراضيًا أولًا",
+    "default_must_be_active": "الموقع الافتراضي يجب أن يكون نشطًا",
+    "invalid_location_code": "استخدم حروفًا إنجليزية كبيرة وأرقامًا وشرطات (2 إلى 20)"
   },
   "status": {
     "draft": "مسودة",
@@ -245,5 +254,70 @@
     "moveLater": "تأخير",
     "hint": "JPEG أو PNG أو WebP أو AVIF، حتى 10 ميجابايت، و300 بكسل على الأقل. يمكنك سحب الصور وإفلاتها هنا.",
     "tooMany": "الحد الأقصى {{max}} صورة للمنتج."
+  },
+  "inventory": {
+    "tabs": {
+      "stock": "الأرصدة",
+      "locations": "المواقع"
+    },
+    "searchPlaceholder": "ابحث بالاسم أو الكود",
+    "lowStockOnly": "منخفض أو نافد فقط",
+    "totalAvailable": "المتاح",
+    "actions": "إجراءات",
+    "change": "تعديل المخزون",
+    "history": "سجل الحركات",
+    "empty": "لا توجد أنواع مطابقة.",
+    "outOfStock": "نافد",
+    "low": "منخفض",
+    "inStock": "متوفر",
+    "reservedShort": "محجوز {{count}}",
+    "action": "نوع العملية",
+    "modes": {
+      "receive": "استلام",
+      "adjust": "جرد",
+      "write_off": "شطب",
+      "transfer": "تحويل",
+      "threshold": "حد التنبيه"
+    },
+    "modeHints": {
+      "receive": "إضافة كمية وصلت إلى المخزن.",
+      "adjust": "اكتب الكمية الفعلية بعد العدّ؛ سيُسجل الفرق.",
+      "write_off": "خصم كمية تالفة أو مفقودة.",
+      "transfer": "نقل كمية من موقع إلى آخر.",
+      "threshold": "تنبيه عندما يصل المتاح إلى هذا الرقم أو أقل."
+    },
+    "location": "الموقع",
+    "from": "من",
+    "to": "إلى",
+    "currentAt": "الموجود: {{onHand}} · المتاح: {{available}}",
+    "quantity": "الكمية",
+    "countedQuantity": "الكمية بعد العدّ",
+    "reason": "السبب",
+    "threshold": "حد التنبيه",
+    "thresholdHint": "اتركه فارغًا لإيقاف التنبيه.",
+    "noHistory": "لا توجد حركات بعد.",
+    "date": "التاريخ",
+    "after": "الرصيد بعدها",
+    "by": "بواسطة",
+    "system": "النظام",
+    "newLocation": "موقع جديد",
+    "locationName": "اسم الموقع",
+    "code": "الكود",
+    "codeHint": "حروف إنجليزية وأرقام وشرطات، مثل MAIN",
+    "address": "العنوان",
+    "default": "الافتراضي",
+    "makeDefault": "الموقع الافتراضي (تُحجز الطلبات منه أولًا)",
+    "available": "متاح: {{count}}"
+  },
+  "movementTypes": {
+    "receive": "استلام",
+    "adjust": "جرد",
+    "write_off": "شطب",
+    "transfer_out": "تحويل صادر",
+    "transfer_in": "تحويل وارد",
+    "reserve": "حجز",
+    "release": "إلغاء حجز",
+    "fulfil": "تسليم",
+    "return": "مرتجع"
   }
 }

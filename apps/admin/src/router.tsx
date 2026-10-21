@@ -154,6 +154,25 @@ const brandsRoute = createRoute({
   component: lazyRouteComponent(catalog.brands, 'BrandsPage'),
 });
 
+// ─── Inventory ─────────────────────────────────────────────────────────────
+
+const inventory = () => import('./features/inventory/inventory-page');
+
+export const inventoryRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/inventory',
+  beforeLoad: requirePermission('inventory.read'),
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: 'locations'; q?: string; lowStock?: boolean; page?: number } => ({
+    tab: search.tab === 'locations' ? 'locations' : undefined,
+    q: optionalString(search.q),
+    lowStock: search.lowStock === true || search.lowStock === 'true' ? true : undefined,
+    page: Number(search.page) > 1 ? Number(search.page) : undefined,
+  }),
+  component: lazyRouteComponent(inventory, 'InventoryPage'),
+});
+
 const routeTree = rootRoute.addChildren([
   loginRoute,
   noAccessRoute,
@@ -166,6 +185,7 @@ const routeTree = rootRoute.addChildren([
     categoryNewRoute,
     categoryEditRoute,
     brandsRoute,
+    inventoryRoute,
   ]),
 ]);
 

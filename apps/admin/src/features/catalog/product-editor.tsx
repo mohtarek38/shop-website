@@ -388,6 +388,7 @@ function ProductEditor({
               register={register}
               errors={errors}
               variantAttributes={variantAttributes}
+              stock={Object.fromEntries(product?.variants.map((v) => [v.id, v.available]) ?? [])}
             />
           </Section>
 

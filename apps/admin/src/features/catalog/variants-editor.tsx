@@ -1,5 +1,6 @@
 import type { CategoryAttribute } from '@shop/contracts';
-import { Button, Checkbox, FormRow, Input } from '@shop/ui';
+import { Badge, Button, Checkbox, FormRow, Input } from '@shop/ui';
+import { Link } from '@tanstack/react-router';
 import { ArrowDown, ArrowUp, Plus, Trash2 } from 'lucide-react';
 import {
   type Control,
@@ -31,11 +32,14 @@ export function VariantsEditor({
   register,
   errors,
   variantAttributes,
+  stock = {},
 }: {
   control: Control<ProductFormValues>;
   register: UseFormRegister<ProductFormValues>;
   errors: FieldErrors<ProductFormValues>;
   variantAttributes: CategoryAttribute[];
+  /** Available units per saved variant id (read-only; changed on the inventory page). */
+  stock?: Record<string, number>;
 }) {
   const { t } = useTranslation();
   // keyName: our variants have their own `id` (database id) that must not be overwritten.
@@ -83,6 +87,17 @@ export function VariantsEditor({
         <fieldset key={field.fieldKey} className="space-y-3 rounded-card border border-border p-3">
           <div className="flex items-center gap-2">
             <legend className="font-medium">{t('productEditor.variant', { n: index + 1 })}</legend>
+            {field.id && stock[field.id] !== undefined && (
+              <Link
+                to="/inventory"
+                search={{ q: field.sku }}
+                className="text-xs text-muted underline-offset-2 hover:text-primary hover:underline"
+              >
+                <Badge tone={stock[field.id]! > 0 ? 'success' : 'danger'}>
+                  {t('inventory.available', { count: stock[field.id] })}
+                </Badge>
+              </Link>
+            )}
             <div className="ms-auto flex gap-1">
               <Button
                 size="sm"
