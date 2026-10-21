@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+@import '@shop/brand/tokens.css';
+
+/* Shared components ship as source; let Tailwind see their classes. */
+@source '../../../packages/ui/src';
+
+body {
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-family);
+  line-height: 1.6;
+}

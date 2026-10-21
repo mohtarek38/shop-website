@@ -1,0 +1,57 @@
+{
+  "app": {
+    "title": "Dashboard",
+    "switchLanguage": "العربية",
+    "switchLanguageLabel": "Switch to Arabic",
+    "signOut": "Sign out",
+    "menu": "Menu",
+    "soon": "Soon"
+  },
+  "nav": {
+    "home": "Home",
+    "orders": "Orders",
+    "products": "Products",
+    "inventory": "Inventory",
+    "customers": "Customers",
+    "delivery": "Delivery",
+    "myDeliveries": "My deliveries",
+    "promotions": "Promotions",
+    "content": "Content",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "login": {
+    "title": "Staff sign in",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "invalid": "Email or password is incorrect.",
+    "tooMany": "Too many attempts. Wait a moment and try again.",
+    "failed": "Couldn't sign in. Try again."
+  },
+  "home": {
+    "welcome": "Welcome, {{name}}",
+    "roles": "Your roles",
+    "comingSoon": "Order and stock summaries will appear here once orders arrive in Phase 3."
+  },
+  "roles": {
+    "owner": "Owner",
+    "manager": "Manager",
+    "clerk": "Clerk",
+    "catalog_editor": "Catalog editor",
+    "driver": "Driver"
+  },
+  "noAccess": {
+    "title": "You can't access the dashboard",
+    "body": "This isn't a staff account. Sign in with your staff account, or contact the owner.",
+    "action": "Sign in with another account"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "home": "Back to home"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "retry": "Try again"
+  }
+}

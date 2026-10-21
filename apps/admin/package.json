@@ -1,0 +1,39 @@
+{
+  "name": "@shop/admin",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "brand-assets": "node ../../packages/brand/scripts/copy-assets.mjs public/brand",
+    "dev": "pnpm brand-assets && vite",
+    "build": "node ../../packages/brand/scripts/check-brand.mjs && pnpm brand-assets && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-sans-arabic": "^5.3.0",
+    "@shop/api-client": "workspace:*",
+    "@shop/brand": "workspace:*",
+    "@shop/contracts": "workspace:*",
+    "@shop/ui": "workspace:*",
+    "@tanstack/react-query": "^5.104.5",
+    "@tanstack/react-router": "^1.170.45",
+    "i18next": "^26.5.3",
+    "lucide-react": "^1.60.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-i18next": "^17.1.0"
+  },
+  "devDependencies": {
+    "@shop/config": "workspace:*",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.4"
+  }
+}
