@@ -1,0 +1,4 @@
+{
+  "extends": "@shop/config/tsconfig/library.json",
+  "include": ["src", "tsup.config.ts", "vitest.config.ts"]
+}

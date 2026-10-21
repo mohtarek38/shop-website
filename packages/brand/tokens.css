@@ -1,0 +1,65 @@
+/*
+ * Brand design tokens: palette B "Teal home" (docs/BRAND.md §2).
+ * Components use the Tailwind names (bg-primary, text-cta-fg, …), never raw hex.
+ * To change the palette, edit only the :root values below.
+ */
+:root {
+  --primary: #0f6e64;
+  --primary-hover: #0a4f48;
+  --primary-fg: #ffffff;
+  --primary-soft: #e7f4f1;
+
+  --cta: #f5b731;
+  --cta-hover: #e6a51a;
+  --cta-fg: #3d2a00;
+
+  --background: #ffffff;
+  --surface: #f7f8fa;
+  --border: #e3e6eb;
+  --text: #1a1d21;
+  --text-muted: #5b6470;
+
+  --success: #1e7f4f;
+  --success-soft: #e6f4ec;
+  --warning: #9a5b00;
+  --warning-soft: #fdf1dc;
+  --danger: #c62828;
+  --danger-soft: #fbe9e9;
+  --info: #1f6fb2;
+  --info-soft: #e6f0f9;
+  --sale: #c62828;
+  --whatsapp: #25d366;
+
+  --radius: 0.5rem;
+  --radius-card: 0.75rem;
+  --font-sans: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+}
+
+/* Tailwind v4 theme mapping. Ignored by browsers when used without Tailwind. */
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-soft: var(--primary-soft);
+  --color-cta: var(--cta);
+  --color-cta-hover: var(--cta-hover);
+  --color-cta-fg: var(--cta-fg);
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-sale: var(--sale);
+  --color-whatsapp: var(--whatsapp);
+  --radius-DEFAULT: var(--radius);
+  --radius-card: var(--radius-card);
+  --font-sans: var(--font-sans);
+}
