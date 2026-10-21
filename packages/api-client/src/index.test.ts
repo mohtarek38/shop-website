@@ -51,3 +51,23 @@ describe('createApiClient', () => {
     expect(error.problem?.title).toBe('Invalid');
   });
 });
+
+describe('admin catalog client', () => {
+  it('builds list queries without empty values', async () => {
+    const fetch = vi.fn().mockResolvedValue(jsonResponse(200, { items: [], total: 0 }));
+    await createApiClient({ fetch }).admin.products.list({
+      q: 'ثلاجة',
+      page: 2,
+      status: undefined,
+    });
+    expect(fetch.mock.calls[0]![0]).toBe(
+      `/api/v1/admin/products?q=${encodeURIComponent('ثلاجة')}&page=2`,
+    );
+  });
+
+  it('handles 204 No Content on delete', async () => {
+    const fetch = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
+    await expect(createApiClient({ fetch }).admin.brands.remove('id-1')).resolves.toBeUndefined();
+    expect(fetch.mock.calls[0]![1]).toMatchObject({ method: 'DELETE' });
+  });
+});

@@ -1,10 +1,26 @@
 import {
+  type Brand,
+  type BrandInput,
+  type Category,
+  type CategoryInput,
   type Locale,
   type Me,
   normalizeEgyptianMobile,
+  type Product,
+  type ProductInput,
+  type ProductListItem,
+  type ProductListQuery,
+  type ProductStatus,
   type ProblemDetails,
   type RegisterCustomerInput,
 } from '@shop/contracts';
+
+export interface Page<T> {
+  items: T[];
+  page: number;
+  pageSize: number;
+  total: number;
+}
 
 /** An API error response, carrying the RFC 9457 problem details from the server. */
 export class ApiError extends Error {
@@ -69,10 +85,47 @@ export function createApiClient(options: ApiClientOptions = {}) {
       get: () => request<Me>('GET', '/api/v1/me'),
       update: (input: { locale: Locale }) => request<Me>('PATCH', '/api/v1/me', input),
     },
+
+    /** Staff-only endpoints (permission-guarded by the API). */
+    admin: {
+      categories: crud<Category, CategoryInput>(request, '/api/v1/admin/categories'),
+      brands: crud<Brand, BrandInput>(request, '/api/v1/admin/brands'),
+      products: {
+        list: (query: ProductListQuery = {}) =>
+          request<Page<ProductListItem>>('GET', `/api/v1/admin/products${toQuery(query)}`),
+        get: (id: string) => request<Product>('GET', `/api/v1/admin/products/${id}`),
+        create: (input: ProductInput) => request<Product>('POST', '/api/v1/admin/products', input),
+        update: (id: string, input: ProductInput) =>
+          request<Product>('PUT', `/api/v1/admin/products/${id}`, input),
+        setStatus: (id: string, status: ProductStatus) =>
+          request<Product>('PATCH', `/api/v1/admin/products/${id}/status`, { status }),
+        remove: (id: string) => request<void>('DELETE', `/api/v1/admin/products/${id}`),
+      },
+    },
   };
 }
 
 export type ApiClient = ReturnType<typeof createApiClient>;
+
+type RequestFn = <T>(method: Method, path: string, body?: unknown) => Promise<T>;
+
+function crud<T, Input>(request: RequestFn, base: string) {
+  return {
+    list: () => request<T[]>('GET', base),
+    get: (id: string) => request<T>('GET', `${base}/${id}`),
+    create: (input: Input) => request<T>('POST', base, input),
+    update: (id: string, input: Input) => request<T>('PUT', `${base}/${id}`, input),
+    remove: (id: string) => request<void>('DELETE', `${base}/${id}`),
+  };
+}
+
+/** `?a=1&b=x`, skipping empty values. */
+function toQuery(params: Record<string, string | number | undefined>): string {
+  const entries = Object.entries(params).filter(
+    (entry): entry is [string, string | number] => entry[1] !== undefined && entry[1] !== '',
+  );
+  return entries.length ? `?${new URLSearchParams(entries.map(([k, v]) => [k, String(v)]))}` : '';
+}
 
 async function readProblem(response: Response): Promise<ProblemDetails | null> {
   try {

@@ -219,7 +219,15 @@ export const productListQuerySchema = paginationQuerySchema.extend({
   brandId: z.uuid().optional(),
   status: productStatusSchema.optional(),
 });
-export type ProductListQuery = z.input<typeof productListQuerySchema>;
+/** Query-string input (the schema coerces strings, so its input type is too loose to reuse). */
+export type ProductListQuery = {
+  page?: number;
+  pageSize?: number;
+  q?: string;
+  categoryId?: string;
+  brandId?: string;
+  status?: ProductStatus;
+};
 
 export interface ProductVariant {
   id: string;
