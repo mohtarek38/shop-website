@@ -1,12 +1,14 @@
 import type { Permission } from '@shop/contracts';
 import {
   BarChart3,
+  FolderTree,
   Home,
   LayoutTemplate,
   type LucideIcon,
   Package,
   Receipt,
   Settings,
+  Tags,
   TicketPercent,
   Truck,
   Users,
@@ -18,6 +20,8 @@ export interface NavItem {
     | 'home'
     | 'orders'
     | 'products'
+    | 'categories'
+    | 'brands'
     | 'inventory'
     | 'customers'
     | 'delivery'
@@ -30,13 +34,15 @@ export interface NavItem {
   /** Shown if the user has ANY of these. Empty = everyone. */
   anyOf: Permission[];
   /** Route path once the screen exists; `null` shows a "Soon" item. */
-  to: '/' | null;
+  to: '/' | '/products' | '/categories' | '/brands' | null;
 }
 
 export const NAV_ITEMS: NavItem[] = [
   { key: 'home', icon: Home, anyOf: [], to: '/' },
   { key: 'orders', icon: Receipt, anyOf: ['orders.read'], to: null },
-  { key: 'products', icon: Package, anyOf: ['catalog.read'], to: null },
+  { key: 'products', icon: Package, anyOf: ['catalog.read'], to: '/products' },
+  { key: 'categories', icon: FolderTree, anyOf: ['catalog.read'], to: '/categories' },
+  { key: 'brands', icon: Tags, anyOf: ['catalog.read'], to: '/brands' },
   { key: 'inventory', icon: Warehouse, anyOf: ['inventory.read'], to: null },
   { key: 'customers', icon: Users, anyOf: ['customers.read'], to: null },
   { key: 'delivery', icon: Truck, anyOf: ['delivery.assign', 'delivery.manage_zones'], to: null },

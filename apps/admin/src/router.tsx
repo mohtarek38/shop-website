@@ -3,10 +3,13 @@ import {
   createRootRouteWithContext,
   createRoute,
   createRouter,
+  lazyRouteComponent,
   Outlet,
   redirect,
 } from '@tanstack/react-router';
+import type { ProductStatus } from '@shop/contracts';
 import { ApiError, meQuery } from './lib/api';
+import { requirePermission } from './lib/permissions';
 import { AppLayout } from './routes/app-layout';
 import { ErrorPage } from './routes/error-page';
 import { HomePage } from './routes/home';
@@ -62,10 +65,108 @@ const homeRoute = createRoute({
   component: HomePage,
 });
 
+// ─── Catalog ───────────────────────────────────────────────────────────────
+// Screens load on demand, so staff who never open the catalog (drivers on phones)
+// don't download it.
+const catalog = {
+  products: () => import('./features/catalog/products-page'),
+  productEditor: () => import('./features/catalog/product-editor'),
+  categories: () => import('./features/catalog/categories-page'),
+  categoryEditor: () => import('./features/catalog/category-editor'),
+  brands: () => import('./features/catalog/brands-page'),
+};
+
+const optionalString = (value: unknown) => (typeof value === 'string' && value ? value : undefined);
+const STATUSES: readonly string[] = ['draft', 'active', 'archived'];
+
+export const productsRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/products',
+  beforeLoad: requirePermission('catalog.read'),
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): {
+    q?: string;
+    categoryId?: string;
+    brandId?: string;
+    status?: ProductStatus;
+    page?: number;
+  } => ({
+    q: optionalString(search.q),
+    categoryId: optionalString(search.categoryId),
+    brandId: optionalString(search.brandId),
+    status: STATUSES.includes(search.status as string)
+      ? (search.status as ProductStatus)
+      : undefined,
+    page: Number(search.page) > 1 ? Number(search.page) : undefined,
+  }),
+  component: lazyRouteComponent(catalog.products, 'ProductsPage'),
+});
+
+export const productNewRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/products/new',
+  beforeLoad: requirePermission('catalog.write'),
+  validateSearch: (search: Record<string, unknown>): { categoryId?: string } => ({
+    categoryId: optionalString(search.categoryId),
+  }),
+  component: lazyRouteComponent(catalog.productEditor, 'NewProductPage'),
+});
+
+export const productEditRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/products/$productId',
+  beforeLoad: requirePermission('catalog.read'),
+  validateSearch: (search: Record<string, unknown>): { created?: boolean } => ({
+    created: search.created === true || search.created === 'true' ? true : undefined,
+  }),
+  component: lazyRouteComponent(catalog.productEditor, 'EditProductPage'),
+});
+
+const categoriesRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/categories',
+  beforeLoad: requirePermission('catalog.read'),
+  component: lazyRouteComponent(catalog.categories, 'CategoriesPage'),
+});
+
+export const categoryNewRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/categories/new',
+  beforeLoad: requirePermission('catalog.write'),
+  validateSearch: (search: Record<string, unknown>): { parentId?: string } => ({
+    parentId: optionalString(search.parentId),
+  }),
+  component: lazyRouteComponent(catalog.categoryEditor, 'NewCategoryPage'),
+});
+
+export const categoryEditRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/categories/$categoryId',
+  beforeLoad: requirePermission('catalog.read'),
+  component: lazyRouteComponent(catalog.categoryEditor, 'EditCategoryPage'),
+});
+
+const brandsRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/brands',
+  beforeLoad: requirePermission('catalog.read'),
+  component: lazyRouteComponent(catalog.brands, 'BrandsPage'),
+});
+
 const routeTree = rootRoute.addChildren([
   loginRoute,
   noAccessRoute,
-  appRoute.addChildren([homeRoute]),
+  appRoute.addChildren([
+    homeRoute,
+    productsRoute,
+    productNewRoute,
+    productEditRoute,
+    categoriesRoute,
+    categoryNewRoute,
+    categoryEditRoute,
+    brandsRoute,
+  ]),
 ]);
 
 export function createAppRouter(queryClient: QueryClient) {

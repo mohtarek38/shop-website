@@ -11,7 +11,16 @@ describe('visibleNavItems', () => {
 
   it('shows a clerk order work but not settings or reports', () => {
     const clerk = keys(DEFAULT_ROLE_PERMISSIONS.clerk);
-    expect(clerk).toEqual(['home', 'orders', 'products', 'inventory', 'customers', 'delivery']);
+    expect(clerk).toEqual([
+      'home',
+      'orders',
+      'products',
+      'categories',
+      'brands',
+      'inventory',
+      'customers',
+      'delivery',
+    ]);
   });
 
   it('shows the owner everything except the driver-only screen', () => {
