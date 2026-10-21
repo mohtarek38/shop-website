@@ -399,8 +399,8 @@ Each phase ends with a deploy to production (behind basic auth until launch).
 - [x] PLAN.md, DATABASE.md, ADRs
 - [x] Low-fidelity wireframes for storefront and dashboard ([WIREFRAMES.md](WIREFRAMES.md))
 - [x] Brand system with swappable name/logo/colours ([BRAND.md](BRAND.md), ADR-0021)
-- [ ] Choose palette (A / B / C)
-- [ ] Visual mockups of key pages in the chosen palette
+- [x] Palette chosen: B, Teal home
+- [x] Visual mockups of key pages ([design/mockups.html](design/mockups.html))
 - [ ] Shop name + logo (can come later: placeholders until then, production build blocks them)
 
 ### Phase 1 — Foundation

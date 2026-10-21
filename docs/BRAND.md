@@ -1,6 +1,6 @@
 # Brand System
 
-> Status: **Draft**. Name: _not decided_ · Palette: _awaiting choice (B proposed)_ · Last updated: 2026-10-21
+> Status: **Draft**. Name: _not decided_ · Palette: **B, Teal home** ✅ · Last updated: 2026-10-21
 > How the brand is wired into the code: [ADR-0021](adr/0021-brand-as-configuration.md)
 
 Everything brand-related lives in **one package** (`packages/brand`). The shop name, logo and colours can be changed later by editing that package only. No page or component hard-codes them.
@@ -30,37 +30,41 @@ Everything brand-related lives in **one package** (`packages/brand`). The shop n
 
 ---
 
-## 2. Colour palette
+## 2. Colour palette: **B, Teal home** ✅
 
-Three directions were compared visually. **B: Teal home** is proposed: warm and home-oriented, stands out from the many blue-heavy electronics shops, with a high-visibility amber "Add to cart" button.
+Chosen 2026-10-21. Warm and home-oriented, stands out from the many blue-heavy electronics shops, with a high-visibility amber "Add to cart" button. (Rejected: A Trust blue `#1E4FA3`/`#F28C28`, C Graphite volt `#1F2328`/`#C6F432`.)
 
-### 2.1 Brand colours (per option)
+Visual reference: [design/mockups.html](design/mockups.html)
 
-| Token | A: Trust blue | **B: Teal home** | C: Graphite volt | Used for |
+### 2.1 Brand colours
+
+| Token | Value | Used for | Contrast |
+|---|---|---|---|
+| `primary` | `#0F6E64` | Header, links, active states, focus ring | 6.1:1 on white ✓ |
+| `primary-hover` | `#0A4F48` | Hover, prices | 9.3:1 on white ✓ |
+| `primary-fg` | `#FFFFFF` | Text on primary | |
+| `primary-soft` | `#E7F4F1` | Tinted backgrounds, image wells, selected rows | |
+| `cta` | `#F5B731` | **One** main action per screen: Add to cart, Place order | |
+| `cta-hover` | `#E6A51A` | CTA hover/pressed | |
+| `cta-fg` | `#3D2A00` | Text on CTA (white fails contrast on amber) | 7.6:1 on `cta` ✓ |
+
+### 2.2 Neutrals & semantic colours
+
+| Token | Value | Soft background | Used for | Contrast on white |
 |---|---|---|---|---|
-| `primary` | `#1E4FA3` | **`#0F6E64`** | `#1F2328` | Header, links, active states, focus ring |
-| `primary-hover` / dark | `#163A78` | **`#0A4F48`** | `#3A4150` | Hover, prices, headings accent |
-| `primary-fg` | `#FFFFFF` | **`#FFFFFF`** | `#FFFFFF` | Text on primary |
-| `primary-soft` | `#EEF3FB` | **`#E7F4F1`** | `#F1F2F4` | Tinted backgrounds, image wells, selected rows |
-| `cta` | `#F28C28` | **`#F5B731`** | `#C6F432` | **One** main action per screen: Add to cart, Place order |
-| `cta-fg` | `#2B1600` | **`#3D2A00`** | `#1F2328` | Text on CTA (dark text; white fails contrast on these) |
+| `background` | `#FFFFFF` | | Page | |
+| `surface` | `#F7F8FA` | | Cards, sections | |
+| `border` | `#E3E6EB` | | Dividers, inputs | |
+| `text` | `#1A1D21` | | Body text | 16.9:1 ✓ |
+| `text-muted` | `#5B6470` | | Secondary text | 6.0:1 ✓ |
+| `success` | `#1E7F4F` | `#E6F4EC` | In stock, delivered, paid | 5.0:1 ✓ |
+| `warning` | `#9A5B00` | `#FDF1DC` | Low stock, awaiting verification | 5.4:1 ✓ |
+| `danger` | `#C62828` | `#FBE9E9` | Errors, out of stock, cancelled | 5.6:1 ✓ |
+| `info` | `#1F6FB2` | `#E6F0F9` | Info notes, "placed" status | 5.2:1 ✓ |
+| `sale` | `#C62828` | `#FBE9E9` | Discount badges (old price uses `text-muted` + strikethrough) | 5.6:1 ✓ |
+| `whatsapp` | `#25D366` | | WhatsApp button only (WhatsApp's own colour, icon on it is white, large) | UI element |
 
-### 2.2 Shared neutrals & semantic colours (same for every option)
-
-| Token | Value | Used for |
-|---|---|---|
-| `background` | `#FFFFFF` | Page |
-| `surface` | `#F7F8FA` | Cards, sections |
-| `border` | `#E3E6EB` | Dividers, inputs |
-| `text` | `#1A1D21` | Body text |
-| `text-muted` | `#5B6470` | Secondary text |
-| `success` | `#1E7F4F` | In stock, delivered, paid |
-| `warning` | `#B26A00` | Low stock, awaiting verification |
-| `danger` | `#C62828` | Errors, out of stock, cancelled |
-| `info` | `#1F6FB2` | Info notes, "placed" status |
-| `sale` | `#C62828` | Discount badges, old-price strikethrough is `text-muted` |
-
-All text/background pairs must meet **WCAG AA** (4.5:1 for body text, 3:1 for large text and UI). This is checked when tokens are finalized.
+Badges use **soft background + full colour text** of the same tone.
 
 ### 2.3 Order status colours (dashboard + tracking page)
 
@@ -163,7 +167,7 @@ When real logo files are added to `packages/brand/assets/`, `<Logo />` uses them
 | Brand lives in one package, swappable | ✅ Decided (ADR-0021) |
 | Typography | ✅ IBM Plex Sans Arabic |
 | Neutrals, semantic & status colours | ✅ Decided |
-| Brand colours | ⏳ Choose A / **B** / C |
+| Brand colours | ✅ B, Teal home |
 | Name | ⏳ Placeholder |
 | Logo | ⏳ Placeholder mark + text wordmark |
 | Voice & tone | ✅ Proposed (review) |

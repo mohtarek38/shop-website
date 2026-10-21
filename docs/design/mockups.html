@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop Mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Brand tokens — mirror of docs/BRAND.md §2 (future packages/brand/tokens.css) */
+:root{
+  --primary:#0F6E64;--primary-hover:#0A4F48;--primary-fg:#FFFFFF;--primary-soft:#E7F4F1;
+  --cta:#F5B731;--cta-hover:#E6A51A;--cta-fg:#3D2A00;
+  --background:#FFFFFF;--surface:#F7F8FA;--border:#E3E6EB;--text:#1A1D21;--text-muted:#5B6470;
+  --success:#1E7F4F;--success-soft:#E6F4EC;--warning:#9A5B00;--warning-soft:#FDF1DC;
+  --danger:#C62828;--danger-soft:#FBE9E9;--info:#1F6FB2;--info-soft:#E6F0F9;
+  --sale:#C62828;--whatsapp:#25D366;
+  --radius:8px;--radius-card:12px;
+  --canvas:#E9ECF0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--canvas);color:var(--text);font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;line-height:1.6}
+.page{max-width:1240px;margin:0 auto;padding:24px 16px 64px}
+.intro{direction:ltr;text-align:left;font-size:14px;color:var(--text-muted);margin:0 0 24px}
+.intro h1{font-size:22px;color:var(--text);margin:0 0 4px}
+.row{display:flex;flex-wrap:wrap;gap:32px;justify-content:center;margin-bottom:48px}
+.label{direction:ltr;text-align:center;font-size:13px;color:var(--text-muted);margin:0 0 10px;font-weight:500}
+.phone{width:360px;max-width:100%;background:var(--background);border:8px solid #1A1D21;border-radius:32px;overflow:hidden;position:relative}
+.phone .screen{height:740px;overflow:hidden;position:relative}
+.icon{width:20px;height:20px;stroke-width:1.75;flex:none}
+.ic-sm{width:16px;height:16px}
+.ic-lg{width:40px;height:40px;stroke-width:1.5}
+/* shared components */
+.hdr{background:var(--primary);color:var(--primary-fg);padding:10px 12px}
+.hdr-top{display:flex;align-items:center;gap:12px}
+.logo{display:flex;align-items:center;gap:6px;font-weight:700;font-size:16px}
+.logo-mark{width:28px;height:28px;border-radius:7px;background:var(--primary-fg);color:var(--primary);display:grid;place-items:center}
+.spacer{flex:1}
+.badge-count{position:relative}
+.badge-count b{position:absolute;top:-6px;left:-8px;background:var(--cta);color:var(--cta-fg);font-size:10px;min-width:16px;height:16px;border-radius:8px;display:grid;place-items:center}
+.search{margin-top:10px;background:var(--background);color:var(--text-muted);border-radius:var(--radius);padding:8px 10px;font-size:13px;display:flex;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:var(--radius);padding:10px 14px;font:inherit;font-size:14px;font-weight:500;border:1px solid transparent;cursor:pointer}
+.btn-cta{background:var(--cta);color:var(--cta-fg)}
+.btn-cta:hover{background:var(--cta-hover)}
+.btn-primary{background:var(--primary);color:var(--primary-fg)}
+.btn-outline{background:var(--background);color:var(--primary);border-color:var(--primary)}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--border)}
+.btn-wa{background:var(--background);color:#128C4A;border-color:var(--whatsapp)}
+.btn-block{width:100%}
+.pill{white-space:nowrap;display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;padding:2px 10px;border-radius:999px}
+.p-success{background:var(--success-soft);color:var(--success)}
+.p-warning{background:var(--warning-soft);color:var(--warning)}
+.p-danger{background:var(--danger-soft);color:var(--danger)}
+.p-info{background:var(--info-soft);color:var(--info)}
+.p-primary{background:var(--primary-soft);color:var(--primary-hover)}
+.p-muted{background:var(--surface);color:var(--text-muted)}
+.sec{padding:14px 12px}
+.sec h3{font-size:15px;margin:0 0 10px;display:flex;align-items:center;justify-content:space-between}
+.sec h3 a{font-size:12px;color:var(--primary);font-weight:500;text-decoration:none}
+.well{background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;border-radius:var(--radius)}
+.price{font-weight:700;color:var(--primary-hover)}
+.old{color:var(--text-muted);text-decoration:line-through;font-size:12px;font-weight:400}
+.muted{color:var(--text-muted)}
+.card{background:var(--background);border:1px solid var(--border);border-radius:var(--radius-card)}
+.field{display:block;margin-bottom:10px}
+.field span{display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px}
+.input{border:1px solid var(--border);border-radius:var(--radius);padding:9px 10px;font-size:14px;background:var(--background);display:flex;justify-content:space-between;align-items:center}
+.input.ph{color:#9AA1AB}
+.input.focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.wa-float{position:absolute;bottom:16px;left:16px;width:52px;height:52px;border-radius:50%;background:var(--whatsapp);color:#fff;display:grid;place-items:center;box-shadow:0 4px 12px rgba(0,0,0,.18)}
+/* product card */
+.pcard{border:1px solid var(--border);border-radius:var(--radius-card);padding:8px;position:relative;background:var(--background)}
+.pcard .well{height:110px}
+.pcard .sale{position:absolute;top:12px;right:12px;background:var(--sale);color:#fff;font-size:11px;font-weight:700;padding:1px 6px;border-radius:4px}
+.pcard .fav{position:absolute;top:12px;left:12px;color:var(--text-muted)}
+.pcard .brand{font-size:11px;color:var(--text-muted);margin-top:6px}
+.pcard .name{font-size:13px;line-height:1.4;height:36px;overflow:hidden}
+.pcard .row-b{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.pcard .add{width:34px;height:34px;padding:0;border-radius:var(--radius)}
+/* dashboard */
+.desk{width:100%;max-width:1200px;background:var(--surface);border:1px solid #CDD2D9;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:220px 1fr;min-height:760px}
+.side{background:var(--background);border-left:1px solid var(--border);padding:14px 10px}
+.side .logo{color:var(--primary);margin:2px 6px 18px}
+.side .logo-mark{background:var(--primary);color:var(--primary-fg)}
+.nav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius);color:var(--text);text-decoration:none;font-size:14px;margin-bottom:2px}
+.nav a.on{background:var(--primary-soft);color:var(--primary-hover);font-weight:500}
+.nav a .cnt{margin-inline-start:auto;background:var(--cta);color:var(--cta-fg);font-size:11px;border-radius:9px;padding:0 7px;font-weight:700}
+.top{background:var(--background);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:14px}
+.top .search{margin:0;background:var(--surface);flex:0 1 360px}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--primary-soft);color:var(--primary-hover);display:grid;place-items:center;font-size:13px;font-weight:700}
+.main{padding:20px}
+.ohead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.ohead h2{margin:0;font-size:20px}
+.cols{display:grid;grid-template-columns:1fr 330px;gap:16px}
+.box{background:var(--background);border:1px solid var(--border);border-radius:var(--radius-card);padding:14px 16px;margin-bottom:16px}
+.box h4{margin:0 0 10px;font-size:14px;display:flex;align-items:center;gap:6px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{color:var(--text-muted);font-weight:500;text-align:start;padding:6px 4px;border-bottom:1px solid var(--border)}
+td{padding:10px 4px;border-bottom:1px solid var(--border);vertical-align:middle}
+.thumb{width:40px;height:40px;border-radius:6px}
+.tot{display:flex;justify-content:space-between;font-size:13px;padding:3px 0}
+.tot.big{font-size:16px;font-weight:700;border-top:1px solid var(--border);margin-top:6px;padding-top:8px}
+.tl{list-style:none;margin:0;padding:0;font-size:13px}
+.tl li{display:flex;gap:10px;padding-bottom:12px;position:relative}
+.tl .dot{width:10px;height:10px;border-radius:50%;margin-top:6px;flex:none;background:var(--border)}
+.tl .dot.on{background:var(--primary)}
+.kv{display:flex;justify-content:space-between;font-size:13px;padding:3px 0}
+.note{background:var(--warning-soft);color:var(--warning);border-radius:var(--radius);padding:8px 10px;font-size:12px;display:flex;gap:6px;align-items:flex-start}
+.radio{border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;font-size:13px}
+.radio.on{border-color:var(--primary);background:var(--primary-soft)}
+.rdot{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex:none;margin-top:2px}
+.radio.on .rdot{border:5px solid var(--primary)}
+.seg{display:flex;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.seg div{flex:1;text-align:center;padding:7px;font-size:13px}
+.seg .on{background:var(--primary);color:var(--primary-fg)}
+.sticky-bar{position:absolute;bottom:0;left:0;right:0;background:var(--background);border-top:1px solid var(--border);padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 -4px 12px rgba(0,0,0,.06)}
+@media (max-width:900px){.desk{grid-template-columns:1fr}.side{display:none}.cols{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="intro">
+  <h1>Low-fidelity mockups · Palette B (Teal home)</h1>
+  Arabic (RTL) shown, since it's the default locale. Shop name and logo are placeholders (ADR-0021). Product images are placeholder icons.
+  Structure follows <code>docs/WIREFRAMES.md</code>; colours follow <code>docs/BRAND.md</code>.
+</div>
+
+<div class="row">
+
+<!-- ============ 1. HOME (mobile) ============ -->
+<div>
+<p class="label">1 · Home (mobile)</p>
+<div class="phone"><div class="screen">
+  <div class="hdr">
+    <div class="hdr-top">
+      <i data-lucide="menu" class="icon"></i>
+      <div class="logo"><span class="logo-mark"><i data-lucide="house-plug" class="icon ic-sm"></i></span>اسم المتجر</div>
+      <span class="spacer"></span>
+      <i data-lucide="heart" class="icon"></i>
+      <span class="badge-count"><i data-lucide="shopping-cart" class="icon"></i><b>2</b></span>
+    </div>
+    <div class="search"><i data-lucide="search" class="icon ic-sm"></i>ابحث عن منتج، ماركة أو موديل…</div>
+  </div>
+
+  <div class="sec" style="padding-bottom:0">
+    <div style="background:var(--primary-soft);border-radius:var(--radius-card);padding:16px;display:flex;align-items:center;gap:12px">
+      <div style="flex:1">
+        <div class="pill p-primary" style="background:var(--background)">عروض الشتاء</div>
+        <div style="font-size:18px;font-weight:700;margin:6px 0 2px;color:var(--primary-hover)">خصومات حتى 25%</div>
+        <div class="muted" style="font-size:13px;margin-bottom:10px">على السخانات والدفايات</div>
+        <span class="btn btn-cta" style="padding:7px 14px">تسوق الآن</span>
+      </div>
+      <i data-lucide="heater" class="icon" style="width:72px;height:72px;color:var(--primary);stroke-width:1.25"></i>
+    </div>
+  </div>
+
+  <div class="sec" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;text-align:center;font-size:11px;color:var(--text-muted)">
+    <div><i data-lucide="truck" class="icon" style="color:var(--primary)"></i><br>توصيل لكل مصر</div>
+    <div><i data-lucide="banknote" class="icon" style="color:var(--primary)"></i><br>الدفع عند الاستلام</div>
+    <div><i data-lucide="shield-check" class="icon" style="color:var(--primary)"></i><br>ضمان الوكيل</div>
+    <div><i data-lucide="headset" class="icon" style="color:var(--primary)"></i><br>دعم فني</div>
+  </div>
+
+  <div class="sec" style="padding-top:4px">
+    <h3>تسوق حسب القسم <a href="#">عرض الكل</a></h3>
+    <div class="grid3" style="text-align:center;font-size:12px">
+      <div><div class="well" style="height:64px"><i data-lucide="refrigerator" class="icon ic-lg"></i></div>ثلاجات</div>
+      <div><div class="well" style="height:64px"><i data-lucide="washing-machine" class="icon ic-lg"></i></div>غسالات</div>
+      <div><div class="well" style="height:64px"><i data-lucide="tv" class="icon ic-lg"></i></div>شاشات</div>
+      <div><div class="well" style="height:64px"><i data-lucide="air-vent" class="icon ic-lg"></i></div>تكييفات</div>
+      <div><div class="well" style="height:64px"><i data-lucide="cooking-pot" class="icon ic-lg"></i></div>بوتاجازات</div>
+      <div><div class="well" style="height:64px"><i data-lucide="microwave" class="icon ic-lg"></i></div>أجهزة صغيرة</div>
+    </div>
+  </div>
+
+  <div class="sec" style="padding-top:0">
+    <h3>عروض اليوم <a href="#">عرض الكل</a></h3>
+    <div class="grid2">
+      <div class="pcard">
+        <span class="sale">-9%</span><i data-lucide="heart" class="icon ic-sm fav"></i>
+        <div class="well"><i data-lucide="refrigerator" class="icon ic-lg"></i></div>
+        <div class="brand">سامسونج</div>
+        <div class="name">ثلاجة نوفروست 380 لتر فضي</div>
+        <div class="row-b">
+          <div><div class="price">24,999 ج.م</div><div class="old">27,500</div></div>
+          <span class="btn btn-cta add"><i data-lucide="shopping-cart" class="icon ic-sm"></i></span>
+        </div>
+      </div>
+      <div class="pcard">
+        <span class="sale">-12%</span><i data-lucide="heart" class="icon ic-sm fav"></i>
+        <div class="well"><i data-lucide="washing-machine" class="icon ic-lg"></i></div>
+        <div class="brand">إل جي</div>
+        <div class="name">غسالة فول أوتوماتيك 9 كجم إنفرتر</div>
+        <div class="row-b">
+          <div><div class="price">18,450 ج.م</div><div class="old">20,999</div></div>
+          <span class="btn btn-cta add"><i data-lucide="shopping-cart" class="icon ic-sm"></i></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wa-float"><i data-lucide="message-circle" class="icon" style="width:26px;height:26px"></i></div>
+</div></div>
+</div>
+
+<!-- ============ 2. PRODUCT (mobile) ============ -->
+<div>
+<p class="label">2 · Product page (mobile)</p>
+<div class="phone"><div class="screen">
+  <div class="hdr"><div class="hdr-top">
+    <i data-lucide="arrow-right" class="icon"></i>
+    <div class="logo"><span class="logo-mark"><i data-lucide="house-plug" class="icon ic-sm"></i></span>اسم المتجر</div>
+    <span class="spacer"></span><i data-lucide="search" class="icon"></i>
+    <span class="badge-count"><i data-lucide="shopping-cart" class="icon"></i><b>2</b></span>
+  </div></div>
+
+  <div style="padding:6px 12px;font-size:11px" class="muted">الرئيسية › المطبخ › ثلاجات</div>
+  <div style="padding:0 12px">
+    <div class="well" style="height:200px;position:relative">
+      <i data-lucide="refrigerator" class="icon" style="width:96px;height:96px;stroke-width:1"></i>
+      <span class="sale" style="position:absolute;top:10px;right:10px;background:var(--sale);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px">-9%</span>
+      <div style="position:absolute;bottom:8px;display:flex;gap:4px"><span style="width:16px;height:6px;border-radius:3px;background:var(--primary)"></span><span style="width:6px;height:6px;border-radius:3px;background:#B9D9D3"></span><span style="width:6px;height:6px;border-radius:3px;background:#B9D9D3"></span></div>
+    </div>
+  </div>
+
+  <div class="sec" style="padding-bottom:6px">
+    <div style="display:flex;justify-content:space-between;font-size:12px" class="muted"><span>سامسونج · RT38K5032S8</span><span style="color:var(--warning)">★★★★☆ <span class="muted">(12)</span></span></div>
+    <div style="font-size:17px;font-weight:700;line-height:1.4;margin:4px 0 8px">ثلاجة سامسونج نوفروست 380 لتر، فضي</div>
+    <div style="display:flex;align-items:baseline;gap:8px"><span class="price" style="font-size:22px">24,999 ج.م</span><span class="old" style="font-size:14px">27,500</span><span class="pill p-danger">وفّر 2,501</span></div>
+    <div class="muted" style="font-size:11px">السعر شامل ضريبة القيمة المضافة</div>
+  </div>
+
+  <div class="sec" style="padding-top:4px;padding-bottom:6px">
+    <div style="font-size:12px;margin-bottom:6px">اللون: <b>فضي</b></div>
+    <div style="display:flex;gap:8px">
+      <span style="width:32px;height:32px;border-radius:50%;background:#C9CDD2;outline:2px solid var(--primary);outline-offset:2px"></span>
+      <span style="width:32px;height:32px;border-radius:50%;background:#2B2D31"></span>
+      <span style="width:32px;height:32px;border-radius:50%;background:#F4F4F4;border:1px solid var(--border)"></span>
+    </div>
+  </div>
+
+  <div class="sec" style="padding-top:6px;padding-bottom:6px;display:flex;flex-direction:column;gap:8px">
+    <span class="pill p-success" style="align-self:flex-start"><i data-lucide="circle-check" class="icon ic-sm"></i>متوفر</span>
+    <div style="border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;font-size:12px;display:flex;gap:8px;align-items:center">
+      <i data-lucide="truck" class="icon" style="color:var(--primary)"></i>
+      <div style="flex:1">التوصيل إلى <b style="color:var(--primary)">القاهرة ▾</b><br><span class="muted">خلال 2–4 أيام · 150 ج.م + 100 ج.م للأجهزة الكبيرة</span></div>
+    </div>
+    <span class="btn btn-wa btn-block"><i data-lucide="message-circle" class="icon"></i>اسأل عن المنتج على واتساب</span>
+  </div>
+
+  <div class="sec" style="padding-top:6px">
+    <h3>أهم المواصفات</h3>
+    <table>
+      <tr><td class="muted">السعة</td><td>380 لتر</td></tr>
+      <tr><td class="muted">نوفروست</td><td>نعم</td></tr>
+      <tr><td class="muted">فئة الطاقة</td><td>A+</td></tr>
+    </table>
+  </div>
+
+  <div class="sticky-bar">
+    <div style="flex:none"><div class="price" style="font-size:16px">24,999 ج.م</div><div class="old">27,500</div></div>
+    <div class="seg" style="flex:none;width:92px"><div>−</div><div>1</div><div>+</div></div>
+    <span class="btn btn-cta" style="flex:1"><i data-lucide="shopping-cart" class="icon ic-sm"></i>أضف للسلة</span>
+  </div>
+</div></div>
+</div>
+
+<!-- ============ 3. CHECKOUT (mobile) ============ -->
+<div>
+<p class="label">3 · Checkout (mobile)</p>
+<div class="phone"><div class="screen" style="background:var(--surface)">
+  <div style="background:var(--background);border-bottom:1px solid var(--border);padding:12px;display:flex;align-items:center;gap:8px">
+    <div class="logo" style="color:var(--primary)"><span class="logo-mark" style="background:var(--primary);color:var(--primary-fg)"><i data-lucide="house-plug" class="icon ic-sm"></i></span>اسم المتجر</div>
+    <span class="spacer"></span><span class="muted" style="font-size:12px;display:flex;align-items:center;gap:4px"><i data-lucide="lock" class="icon ic-sm"></i>إتمام الطلب</span>
+  </div>
+
+  <div style="padding:10px 12px">
+    <div class="card" style="padding:12px;margin-bottom:10px">
+      <div style="font-weight:700;font-size:14px;margin-bottom:8px">1. بيانات التواصل</div>
+      <label class="field"><span>الاسم بالكامل</span><div class="input">أحمد محمود</div></label>
+      <label class="field" style="margin:0"><span>رقم الموبايل</span><div class="input focus" dir="ltr" style="justify-content:flex-end">0101 234 5678</div></label>
+    </div>
+
+    <div class="card" style="padding:12px;margin-bottom:10px">
+      <div style="font-weight:700;font-size:14px;margin-bottom:8px">2. عنوان التوصيل</div>
+      <div class="grid2">
+        <label class="field"><span>المحافظة</span><div class="input">القاهرة <i data-lucide="chevron-down" class="icon ic-sm muted"></i></div></label>
+        <label class="field"><span>المنطقة</span><div class="input">مدينة نصر <i data-lucide="chevron-down" class="icon ic-sm muted"></i></div></label>
+      </div>
+      <label class="field"><span>الشارع</span><div class="input ph">اسم الشارع</div></label>
+      <div class="grid3">
+        <label class="field"><span>العقار</span><div class="input ph">12</div></label>
+        <label class="field"><span>الدور</span><div class="input ph">4</div></label>
+        <label class="field"><span>الشقة</span><div class="input ph">8</div></label>
+      </div>
+      <div style="font-size:12px;margin-bottom:4px" class="muted">هل يوجد مصعد؟ <span style="color:var(--text)">(طلبك يحتوي على جهاز كبير)</span></div>
+      <div class="seg"><div class="on">نعم</div><div>لا</div></div>
+      <div style="margin-top:8px;font-size:12px;display:flex;gap:6px;align-items:center;color:var(--primary-hover)"><i data-lucide="truck" class="icon ic-sm"></i>التوصيل خلال 2–4 أيام · 250 ج.م</div>
+    </div>
+
+    <div class="card" style="padding:12px;margin-bottom:10px">
+      <div style="font-weight:700;font-size:14px;margin-bottom:8px">3. طريقة الدفع</div>
+      <div class="radio on"><span class="rdot"></span><div><b>الدفع عند الاستلام</b><br><span class="muted">ادفع نقدًا عند استلام طلبك</span></div><i data-lucide="banknote" class="icon" style="margin-inline-start:auto;color:var(--primary)"></i></div>
+      <div class="radio" style="margin:0"><span class="rdot"></span><div><b>تحويل</b><br><span class="muted">إنستاباي · فودافون كاش · بنك</span></div><i data-lucide="landmark" class="icon muted" style="margin-inline-start:auto"></i></div>
+    </div>
+
+    <div class="card" style="padding:12px">
+      <div class="tot"><span class="muted">المنتجات (1)</span><span>24,999 ج.م</span></div>
+      <div class="tot"><span class="muted">التوصيل</span><span>250 ج.م</span></div>
+      <div class="tot big"><span>الإجمالي</span><span class="price">25,249 ج.م</span></div>
+      <div class="muted" style="font-size:11px">شامل ضريبة القيمة المضافة</div>
+    </div>
+  </div>
+
+  <div class="sticky-bar" style="flex-direction:column;align-items:stretch;gap:4px">
+    <span class="btn btn-cta btn-block">تأكيد الطلب · 25,249 ج.م</span>
+    <div class="muted" style="font-size:11px;text-align:center">سيتصل بك فريقنا لتأكيد الطلب قبل الشحن</div>
+  </div>
+</div></div>
+</div>
+
+<!-- ============ 4. DRIVER (mobile) ============ -->
+<div>
+<p class="label">4 · Driver view (dashboard, mobile)</p>
+<div class="phone"><div class="screen" style="background:var(--surface)">
+  <div class="hdr" style="padding-bottom:14px">
+    <div class="hdr-top"><div class="logo"><span class="logo-mark"><i data-lucide="house-plug" class="icon ic-sm"></i></span>توصيلات اليوم</div><span class="spacer"></span><span class="avatar" style="background:var(--primary-fg)">م</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+      <div style="background:rgba(255,255,255,.12);border-radius:var(--radius);padding:8px 10px"><div style="font-size:11px;opacity:.85">المتبقي</div><div style="font-size:18px;font-weight:700">4 / 6</div></div>
+      <div style="background:rgba(255,255,255,.12);border-radius:var(--radius);padding:8px 10px"><div style="font-size:11px;opacity:.85">نقدية معك</div><div style="font-size:18px;font-weight:700">48,500 ج.م</div></div>
+    </div>
+  </div>
+
+  <div style="padding:10px 12px;display:flex;flex-direction:column;gap:10px">
+    <div class="card" style="padding:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center"><b>#26-000123</b><span class="pill p-primary">خرج للتوصيل</span></div>
+      <div style="font-size:14px;margin:6px 0 2px">أحمد محمود</div>
+      <div class="muted" style="font-size:12px">مدينة نصر، ش مكرم عبيد، عقار 12، الدور 4، شقة 8 · بجوار صيدلية العزبي</div>
+      <div style="display:flex;gap:6px;margin:8px 0"><span class="pill p-success"><i data-lucide="arrow-up-down" class="icon ic-sm"></i>يوجد مصعد</span><span class="pill p-warning">جهاز كبير</span></div>
+      <div class="note" style="background:var(--primary-soft);color:var(--primary-hover);font-size:14px"><i data-lucide="banknote" class="icon"></i>حصّل <b>25,249 ج.م</b></div>
+      <div class="grid2" style="margin-top:8px"><span class="btn btn-ghost"><i data-lucide="phone" class="icon ic-sm"></i>اتصال</span><span class="btn btn-ghost"><i data-lucide="map-pin" class="icon ic-sm"></i>الخريطة</span></div>
+      <div class="grid2" style="margin-top:8px"><span class="btn btn-primary"><i data-lucide="check" class="icon ic-sm"></i>تم التسليم</span><span class="btn btn-ghost" style="color:var(--danger);border-color:var(--danger)"><i data-lucide="x" class="icon ic-sm"></i>تعذر</span></div>
+    </div>
+
+    <div class="card" style="padding:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center"><b>#26-000127</b><span class="pill p-primary">خرج للتوصيل</span></div>
+      <div style="font-size:14px;margin:6px 0 2px">منى السيد</div>
+      <div class="muted" style="font-size:12px">مصر الجديدة، ش الحجاز، عقار 40، الدور 2</div>
+      <div class="note" style="background:var(--success-soft);color:var(--success);margin-top:8px"><i data-lucide="circle-check" class="icon ic-sm"></i>مدفوع بالتحويل، لا تحصّل</div>
+    </div>
+
+    <div class="card" style="padding:12px;opacity:.7">
+      <div style="display:flex;justify-content:space-between;align-items:center"><b>#26-000119</b><span class="pill p-success">تم التسليم</span></div>
+      <div class="muted" style="font-size:12px;margin-top:4px">كريم عادل · تم التحصيل 8,999 ج.م</div>
+    </div>
+  </div>
+</div></div>
+</div>
+
+</div>
+
+<!-- ============ 5. DASHBOARD ORDER DETAIL (desktop) ============ -->
+<p class="label">5 · Dashboard: order detail (desktop)</p>
+<div class="row">
+<div class="desk">
+  <aside class="side">
+    <div class="logo"><span class="logo-mark"><i data-lucide="house-plug" class="icon ic-sm"></i></span>اسم المتجر</div>
+    <nav class="nav">
+      <a href="#"><i data-lucide="layout-dashboard" class="icon"></i>الرئيسية</a>
+      <a href="#" class="on"><i data-lucide="receipt" class="icon"></i>الطلبات<span class="cnt">5</span></a>
+      <a href="#"><i data-lucide="package" class="icon"></i>المنتجات</a>
+      <a href="#"><i data-lucide="warehouse" class="icon"></i>المخزون</a>
+      <a href="#"><i data-lucide="users" class="icon"></i>العملاء</a>
+      <a href="#"><i data-lucide="truck" class="icon"></i>التوصيل</a>
+      <a href="#"><i data-lucide="ticket-percent" class="icon"></i>العروض</a>
+      <a href="#"><i data-lucide="layout-template" class="icon"></i>المحتوى</a>
+      <a href="#"><i data-lucide="chart-column" class="icon"></i>التقارير</a>
+      <a href="#"><i data-lucide="settings" class="icon"></i>الإعدادات</a>
+    </nav>
+  </aside>
+
+  <div>
+    <div class="top">
+      <div class="search"><i data-lucide="search" class="icon ic-sm"></i>ابحث برقم الطلب، الموبايل أو الكود…</div>
+      <span class="spacer"></span>
+      <span class="badge-count" style="color:var(--text-muted)"><i data-lucide="bell" class="icon"></i><b>3</b></span>
+      <span class="muted" style="font-size:13px">EN</span>
+      <span class="avatar">س</span>
+    </div>
+
+    <div class="main">
+      <div class="muted" style="font-size:12px;margin-bottom:6px">الطلبات › #26-000123</div>
+      <div class="ohead">
+        <h2>طلب #26-000123</h2>
+        <span class="pill p-info">جديد</span>
+        <span class="pill p-muted">الدفع عند الاستلام · غير مدفوع</span>
+        <span class="muted" style="font-size:12px">منذ ساعتين</span>
+        <span class="spacer"></span>
+        <span class="btn btn-ghost"><i data-lucide="printer" class="icon ic-sm"></i>طباعة</span>
+        <span class="btn btn-ghost"><i data-lucide="ellipsis" class="icon ic-sm"></i></span>
+        <span class="btn btn-cta"><i data-lucide="phone-call" class="icon ic-sm"></i>تسجيل مكالمة التأكيد</span>
+      </div>
+
+      <div class="cols">
+        <div>
+          <div class="box">
+            <h4><i data-lucide="shopping-bag" class="icon ic-sm"></i>المنتجات</h4>
+            <table>
+              <tr><th></th><th>المنتج</th><th>الكود</th><th>السعر</th><th>الكمية</th><th>المخزون</th><th style="text-align:end">الإجمالي</th></tr>
+              <tr>
+                <td><div class="well thumb"><i data-lucide="refrigerator" class="icon"></i></div></td>
+                <td>ثلاجة سامسونج نوفروست 380 لتر<br><span class="muted">فضي · جهاز كبير</span></td>
+                <td class="muted" style="white-space:nowrap" dir="ltr">SAM-RT38-SL</td><td>24,999</td><td>1</td>
+                <td><span class="pill p-success" style="white-space:nowrap">متاح 6</span></td>
+                <td style="text-align:end">24,999</td>
+              </tr>
+            </table>
+            <div style="max-width:280px;margin-inline-start:auto;margin-top:10px">
+              <div class="tot"><span class="muted">المجموع الفرعي</span><span>24,999 ج.م</span></div>
+              <div class="tot"><span class="muted">التوصيل (القاهرة + جهاز كبير)</span><span>250 ج.م</span></div>
+              <div class="tot big"><span>الإجمالي</span><span>25,249 ج.م</span></div>
+              <div class="tot"><span class="muted">منها ضريبة 14%</span><span class="muted">3,100.75 ج.م</span></div>
+            </div>
+          </div>
+
+          <div class="box">
+            <h4><i data-lucide="history" class="icon ic-sm"></i>سجل الطلب</h4>
+            <ul class="tl">
+              <li><span class="dot on"></span><div><b>تم إنشاء الطلب</b> · بواسطة العميل<br><span class="muted">اليوم 10:42 ص</span></div></li>
+              <li><span class="dot"></span><div class="muted">في انتظار مكالمة التأكيد</div></li>
+            </ul>
+            <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
+              <div class="input ph" style="margin-bottom:8px">أضف ملاحظة داخلية (لا تظهر للعميل)…</div>
+              <span class="btn btn-ghost" style="padding:6px 12px;font-size:13px">إضافة ملاحظة</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="box">
+            <h4><i data-lucide="user" class="icon ic-sm"></i>العميل</h4>
+            <div style="font-weight:500">أحمد محمود</div>
+            <div class="muted" dir="ltr" style="text-align:end;font-size:13px">+20 101 234 5678</div>
+            <div style="display:flex;gap:6px;margin:8px 0"><span class="btn btn-ghost" style="padding:6px 10px;font-size:13px"><i data-lucide="phone" class="icon ic-sm"></i>اتصال</span><span class="btn btn-wa" style="padding:6px 10px;font-size:13px"><i data-lucide="message-circle" class="icon ic-sm"></i>واتساب</span></div>
+            <div class="kv"><span class="muted">طلبات سابقة</span><span>2 (تم تسليمها)</span></div>
+          </div>
+          <div class="box">
+            <h4><i data-lucide="map-pin" class="icon ic-sm"></i>عنوان التوصيل</h4>
+            <div style="font-size:13px">القاهرة، مدينة نصر<br>ش مكرم عبيد، عقار 12، الدور 4، شقة 8<br><span class="muted">بجوار صيدلية العزبي</span></div>
+            <div style="margin-top:8px"><span class="pill p-success">يوجد مصعد</span></div>
+          </div>
+          <div class="box">
+            <h4><i data-lucide="banknote" class="icon ic-sm"></i>الدفع</h4>
+            <div class="kv"><span class="muted">الطريقة</span><span>الدفع عند الاستلام</span></div>
+            <div class="kv"><span class="muted">الحالة</span><span class="pill p-muted">غير مدفوع</span></div>
+          </div>
+          <div class="box">
+            <h4><i data-lucide="warehouse" class="icon ic-sm"></i>التجهيز والشحن</h4>
+            <label class="field"><span>مخزن التجهيز</span><div class="input">المخزن الرئيسي <i data-lucide="chevron-down" class="icon ic-sm muted"></i></div></label>
+            <div class="note"><i data-lucide="info" class="icon ic-sm"></i>يمكن تعيين مندوب بعد تأكيد الطلب</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</div>
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>
