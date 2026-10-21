@@ -41,3 +41,10 @@ desktop.ini
 
 # Generated code
 apps/api/src/generated/
+
+# Brand assets copied at dev/build time from packages/brand/assets
+apps/*/public/brand/
+
+# Next.js generated
+apps/web/next-env.d.ts
+apps/web/.next/

@@ -6,3 +6,5 @@ coverage
 pnpm-lock.yaml
 docs/design/mockups.html
 **/prisma/migrations/**
+apps/*/next-env.d.ts
+apps/*/public/brand

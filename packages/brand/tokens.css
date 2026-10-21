@@ -31,8 +31,9 @@
   --whatsapp: #25d366;
 
   --radius: 0.5rem;
-  --radius-card: 0.75rem;
-  --font-sans: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  --radius-card-size: 0.75rem;
+  /* Apps may override with a self-hosted font variable (e.g. next/font). */
+  --font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif;
 }
 
 /* Tailwind v4 theme mapping. Ignored by browsers when used without Tailwind. */
@@ -59,7 +60,7 @@
   --color-info-soft: var(--info-soft);
   --color-sale: var(--sale);
   --color-whatsapp: var(--whatsapp);
-  --radius-DEFAULT: var(--radius);
-  --radius-card: var(--radius-card);
-  --font-sans: var(--font-sans);
+  --radius-control: var(--radius);
+  --radius-card: var(--radius-card-size);
+  --font-sans: var(--font-family);
 }

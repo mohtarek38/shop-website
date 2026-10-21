@@ -21,6 +21,11 @@ export interface Brand {
   domain: string;
   /** Browser UI colour (mobile address bar), matches `--primary`. */
   themeColor: string;
+  /**
+   * Logo files in ../assets (BRAND.md §4.2). `null` until real files exist; apps then show
+   * the placeholder mark + the shop name as text.
+   */
+  logo: { full: string | null; mark: string | null };
 }
 
 export const PLACEHOLDER = {
@@ -37,6 +42,7 @@ export const brand: Brand = {
   legalName: PLACEHOLDER.legalName,
   domain: PLACEHOLDER.domain,
   themeColor: '#0F6E64',
+  logo: { full: null, mark: null },
 };
 
 /** Returns the brand fields that still hold placeholder values. */

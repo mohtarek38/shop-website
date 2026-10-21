@@ -18,12 +18,15 @@
       }
     },
     "./tokens.css": "./tokens.css",
-    "./assets/*": "./assets/*"
+    "./assets/*": "./assets/*",
+    "./scripts/copy-assets.mjs": "./scripts/copy-assets.mjs",
+    "./scripts/check-brand.mjs": "./scripts/check-brand.mjs"
   },
   "files": [
     "dist",
     "tokens.css",
-    "assets"
+    "assets",
+    "scripts"
   ],
   "scripts": {
     "build": "tsup",
