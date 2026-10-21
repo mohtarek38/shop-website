@@ -1,29 +1,45 @@
 import type { Locale } from '@shop/contracts';
 import { Logo } from '@shop/ui';
-import { Heart, Menu, Search, ShoppingCart, User } from 'lucide-react';
+import { Heart, Search, ShoppingCart, User } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
+import { ACCOUNT_LINKS, CATEGORY_LINKS, FOOTER_LINKS, SEARCH_PATH } from '@/lib/site-links';
 import { LocaleSwitcher } from './locale-switcher';
-
-// Placeholder category links until the catalog exists (Phase 2).
-const NAV = ['refrigerators', 'washers', 'tvs', 'acs', 'cookers', 'small', 'offers'] as const;
+import { MobileMenu } from './mobile-menu';
 
 export async function SiteHeader({ locale }: { locale: Locale }) {
   const t = await getTranslations('common');
   const tNav = await getTranslations('nav');
+  const tFooter = await getTranslations('footer');
+
+  const categories = CATEGORY_LINKS.map((key) => ({ href: `/${key}`, label: tNav(key) }));
+  const searchAction = `/${locale}${SEARCH_PATH}`;
 
   return (
     <header className="sticky top-0 z-40 bg-primary text-primary-fg">
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3">
-        <button type="button" className="p-1 lg:hidden" aria-label={t('menu')}>
-          <Menu className="size-6" aria-hidden />
-        </button>
+        <MobileMenu
+          labels={{
+            open: t('menu'),
+            close: t('closeMenu'),
+            categories: t('categories'),
+            account: t('myAccount'),
+          }}
+          categories={categories}
+          accountLinks={[
+            { href: ACCOUNT_LINKS.account, label: t('account') },
+            { href: ACCOUNT_LINKS.wishlist, label: t('wishlist') },
+            { href: ACCOUNT_LINKS.cart, label: t('cart') },
+            { href: FOOTER_LINKS.trackOrder, label: tFooter('trackOrder') },
+          ]}
+          header={<Logo locale={locale} />}
+        />
         <Link href="/" className="shrink-0">
           <Logo locale={locale} tone="inverse" />
         </Link>
 
         <SearchForm
-          action={`/${locale}/search`}
+          action={searchAction}
           className="mx-4 hidden max-w-xl flex-1 lg:flex"
           label={t('search')}
           placeholder={t('searchPlaceholder')}
@@ -31,13 +47,17 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
         <div className="flex-1 lg:hidden" />
 
         <nav className="flex items-center gap-1">
-          <HeaderIcon href="/account" label={t('account')} className="hidden sm:inline-flex">
+          <HeaderIcon
+            href={ACCOUNT_LINKS.account}
+            label={t('account')}
+            className="hidden sm:inline-flex"
+          >
             <User className="size-5" aria-hidden />
           </HeaderIcon>
-          <HeaderIcon href="/wishlist" label={t('wishlist')}>
+          <HeaderIcon href={ACCOUNT_LINKS.wishlist} label={t('wishlist')}>
             <Heart className="size-5" aria-hidden />
           </HeaderIcon>
-          <HeaderIcon href="/cart" label={t('cart')}>
+          <HeaderIcon href={ACCOUNT_LINKS.cart} label={t('cart')}>
             <ShoppingCart className="size-5" aria-hidden />
           </HeaderIcon>
           <LocaleSwitcher label={t('switchLanguage')} ariaLabel={t('switchLanguageLabel')} />
@@ -46,7 +66,7 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
 
       <div className="px-4 pb-3 lg:hidden">
         <SearchForm
-          action={`/${locale}/search`}
+          action={searchAction}
           label={t('search')}
           placeholder={t('searchPlaceholder')}
         />
@@ -54,10 +74,10 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
 
       <nav className="hidden border-t border-primary-fg/15 bg-primary-hover lg:block">
         <ul className="mx-auto flex max-w-7xl gap-6 px-4 py-2 text-sm">
-          {NAV.map((key) => (
-            <li key={key}>
-              <Link href={`/${key}`} className="opacity-90 hover:opacity-100 hover:underline">
-                {tNav(key)}
+          {categories.map(({ href, label }) => (
+            <li key={href}>
+              <Link href={href} className="opacity-90 hover:opacity-100 hover:underline">
+                {label}
               </Link>
             </li>
           ))}

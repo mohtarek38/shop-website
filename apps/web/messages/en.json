@@ -8,7 +8,10 @@
     "account": "Account",
     "switchLanguage": "العربية",
     "switchLanguageLabel": "Switch to Arabic",
-    "currency": "EGP"
+    "currency": "EGP",
+    "closeMenu": "Close menu",
+    "categories": "Categories",
+    "myAccount": "My account"
   },
   "nav": {
     "refrigerators": "Refrigerators",
@@ -50,6 +53,11 @@
   "notFound": {
     "title": "Page not found",
     "body": "This page may have moved, or the link is incorrect.",
+    "home": "Back to home"
+  },
+  "comingSoon": {
+    "title": "Coming soon",
+    "body": "We're preparing this page. It'll be available soon.",
     "home": "Back to home"
   }
 }

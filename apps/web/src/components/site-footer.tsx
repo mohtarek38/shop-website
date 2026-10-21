@@ -3,8 +3,8 @@ import type { Locale } from '@shop/contracts';
 import { Logo } from '@shop/ui';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
+import { FOOTER_LINKS } from '@/lib/site-links';
 
-const LINKS = ['trackOrder', 'returns', 'faq', 'about', 'terms', 'privacy'] as const;
 const PAYMENTS = ['cod', 'instapay', 'wallets', 'bank'] as const;
 
 export async function SiteFooter({ locale }: { locale: Locale }) {
@@ -21,10 +21,10 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
         <div>
           <h2 className="mb-3 text-sm font-bold">{t('help')}</h2>
           <ul className="grid grid-cols-2 gap-2 text-sm text-muted">
-            {LINKS.map((key) => (
+            {Object.entries(FOOTER_LINKS).map(([key, href]) => (
               <li key={key}>
-                <Link href={`/${kebab(key)}`} className="hover:text-primary hover:underline">
-                  {t(key)}
+                <Link href={href} className="hover:text-primary hover:underline">
+                  {t(key as keyof typeof FOOTER_LINKS)}
                 </Link>
               </li>
             ))}
@@ -51,8 +51,4 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
       </p>
     </footer>
   );
-}
-
-function kebab(value: string): string {
-  return value.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
 }

@@ -6,8 +6,8 @@
   "scripts": {
     "brand-assets": "node ../../packages/brand/scripts/copy-assets.mjs public/brand",
     "dev": "pnpm brand-assets && next dev --port 3000",
-    "build": "node ../../packages/brand/scripts/check-brand.mjs && pnpm brand-assets && next build",
-    "start": "next start --port 3000",
+    "build": "node ../../packages/brand/scripts/check-brand.mjs && pnpm brand-assets && next build && node scripts/prepare-standalone.mjs",
+    "start": "node .next/standalone/apps/web/server.js",
     "lint": "eslint .",
     "typecheck": "next typegen && tsc --noEmit"
   },

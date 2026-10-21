@@ -8,7 +8,10 @@
     "account": "حسابي",
     "switchLanguage": "English",
     "switchLanguageLabel": "التبديل إلى الإنجليزية",
-    "currency": "ج.م"
+    "currency": "ج.م",
+    "closeMenu": "إغلاق القائمة",
+    "categories": "الأقسام",
+    "myAccount": "الحساب"
   },
   "nav": {
     "refrigerators": "ثلاجات",
@@ -50,6 +53,11 @@
   "notFound": {
     "title": "الصفحة غير موجودة",
     "body": "ربما تم نقل هذه الصفحة أو أن الرابط غير صحيح.",
+    "home": "العودة للرئيسية"
+  },
+  "comingSoon": {
+    "title": "قريبًا",
+    "body": "نجهّز هذه الصفحة الآن وستكون متاحة قريبًا.",
     "home": "العودة للرئيسية"
   }
 }
