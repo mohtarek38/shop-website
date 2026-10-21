@@ -2,7 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import type { Category, CategoryAttribute, categoryInputSchema } from '@shop/contracts';
 import type { z } from 'zod';
 import { CategoriesRepository, type CategoryRow } from './categories.repository.js';
-import { invalidField } from './errors.js';
+import { alreadyExists, invalidField } from './errors.js';
 import { effectiveAttributes, toCategory } from './mappers.js';
 
 type CategoryInput = z.output<typeof categoryInputSchema>;
@@ -35,6 +35,7 @@ export class CategoriesService {
   }
 
   async create(input: CategoryInput): Promise<Category> {
+    if (await this.categories.isSlugTaken(input.slug)) throw alreadyExists([['slug']]);
     const parent = await this.validateParent(null, input.parentId);
     this.assertNoKeyClash(input.attributes, parent?.attributes ?? []);
     const row = await this.categories.create(this.toWrite(input), input.attributes);
@@ -43,6 +44,7 @@ export class CategoriesService {
 
   async update(id: string, input: CategoryInput): Promise<Category> {
     const current = await this.findOrThrow(id);
+    if (await this.categories.isSlugTaken(input.slug, id)) throw alreadyExists([['slug']]);
     const parent = await this.validateParent(current, input.parentId);
     this.assertNoKeyClash(input.attributes, parent?.attributes ?? []);
     // Children inherit these attributes, so their own keys mustn't clash either.

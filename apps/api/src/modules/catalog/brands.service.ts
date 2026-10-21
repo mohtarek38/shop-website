@@ -2,6 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import type { Brand, brandInputSchema } from '@shop/contracts';
 import type { z } from 'zod';
 import { type BrandRow, BrandsRepository } from './brands.repository.js';
+import { alreadyExists } from './errors.js';
 import { toBrand } from './mappers.js';
 
 type BrandInput = z.output<typeof brandInputSchema>;
@@ -19,11 +20,13 @@ export class BrandsService {
   }
 
   async create(input: BrandInput): Promise<Brand> {
+    if (await this.brands.isSlugTaken(input.slug)) throw alreadyExists([['slug']]);
     return toBrand(await this.brands.create(input));
   }
 
   async update(id: string, input: BrandInput): Promise<Brand> {
     await this.findOrThrow(id);
+    if (await this.brands.isSlugTaken(input.slug, id)) throw alreadyExists([['slug']]);
     return toBrand(await this.brands.update(id, input));
   }
 

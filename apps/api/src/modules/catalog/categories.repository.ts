@@ -40,6 +40,14 @@ export class CategoriesRepository {
     return this.prisma.category.findUnique({ where: { id }, include: categoryInclude });
   }
 
+  async isSlugTaken(slug: string, excludeId?: string): Promise<boolean> {
+    const owner = await this.prisma.category.findFirst({
+      where: { slug, id: excludeId ? { not: excludeId } : undefined },
+      select: { id: true },
+    });
+    return Boolean(owner);
+  }
+
   findChildren(parentId: string): Promise<CategoryRow[]> {
     return this.prisma.category.findMany({ where: { parentId }, include: categoryInclude });
   }

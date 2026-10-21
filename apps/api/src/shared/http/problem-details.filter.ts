@@ -85,9 +85,9 @@ export class ProblemDetailsFilter implements ExceptionFilter {
 function fromPrismaError(error: Prisma.PrismaClientKnownRequestError): ProblemDetails | null {
   switch (error.code) {
     case 'P2002': {
-      // Unique constraint, e.g. a slug or SKU that already exists.
-      const target = error.meta?.target;
-      const fields = Array.isArray(target) ? target.map(String) : [];
+      // Unique constraint, e.g. a slug or SKU that already exists. Services pre-check the
+      // fields users can fix; this is the fallback when a concurrent write wins the race.
+      const fields = uniqueFields(error);
       return {
         type: `${TYPE_BASE}conflict`,
         title: 'Conflict',
@@ -112,6 +112,25 @@ function fromPrismaError(error: Prisma.PrismaClientKnownRequestError): ProblemDe
     default:
       return null;
   }
+}
+
+/**
+ * Fields of a violated unique constraint. Prisma's classic engine reports `meta.target`;
+ * with the pg driver adapter we only get the index name (`brand_slug_key` → `slug`).
+ */
+function uniqueFields(error: Prisma.PrismaClientKnownRequestError): string[] {
+  const meta = error.meta as
+    | {
+        target?: unknown;
+        driverAdapterError?: { cause?: { table?: string; constraint?: { index?: string } } };
+      }
+    | undefined;
+  if (Array.isArray(meta?.target)) return meta.target.map(String);
+  const cause = meta?.driverAdapterError?.cause;
+  const index = cause?.constraint?.index;
+  if (!index || !cause?.table) return [];
+  const field = index.replace(`${cause.table}_`, '').replace(/_key$/, '');
+  return field ? [field] : [];
 }
 
 function slug(value: string): string {

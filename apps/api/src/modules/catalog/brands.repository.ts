@@ -27,6 +27,14 @@ export class BrandsRepository {
     });
   }
 
+  async isSlugTaken(slug: string, excludeId?: string): Promise<boolean> {
+    const owner = await this.prisma.brand.findFirst({
+      where: { slug, id: excludeId ? { not: excludeId } : undefined },
+      select: { id: true },
+    });
+    return Boolean(owner);
+  }
+
   findById(id: string): Promise<BrandRow | null> {
     return this.prisma.brand.findUnique({ where: { id }, include: brandInclude });
   }

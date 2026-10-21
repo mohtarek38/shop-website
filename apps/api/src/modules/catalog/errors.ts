@@ -9,6 +9,13 @@ export function invalidField(
   return new RequestValidationException([{ code: 'custom', path, message, input: undefined }]);
 }
 
+/** A 400 marking each path as already in use (unique slugs, SKUs). */
+export function alreadyExists(paths: (string | number)[][]): RequestValidationException {
+  return new RequestValidationException(
+    paths.map((path) => ({ code: 'custom', path, message: 'already_exists', input: undefined })),
+  );
+}
+
 /** Re-throws Zod issues from a nested schema with their full path (e.g. `specs.capacity`). */
 export function nestedValidationError(
   prefix: (string | number)[],

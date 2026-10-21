@@ -141,7 +141,7 @@ describe('Catalog admin (e2e)', () => {
   });
 
   describe('brands', () => {
-    it('creates brands and rejects duplicate slugs with 409', async () => {
+    it('creates brands and reports a duplicate slug on the slug field', async () => {
       const samsung = await editor
         .post('/api/v1/admin/brands')
         .send({ slug: 'samsung', name: { ar: 'سامسونج', en: 'Samsung' } })
@@ -151,8 +151,10 @@ describe('Catalog admin (e2e)', () => {
       const dup = await editor
         .post('/api/v1/admin/brands')
         .send({ slug: 'samsung', name: { ar: 'سامسونج 2' } })
-        .expect(409);
-      expect(dup.body.title).toBe('Conflict');
+        .expect(400);
+      expect(dup.body.errors).toEqual([
+        expect.objectContaining({ path: 'slug', message: 'already_exists' }),
+      ]);
     });
   });
 
@@ -206,10 +208,22 @@ describe('Catalog admin (e2e)', () => {
         .expect(400);
       expect(unknown.body.errors[0]).toMatchObject({ path: 'categoryId', message: 'not_found' });
 
-      await editor
+      // Taken slug, and a duplicate SKU (SKUs are stored uppercase) on the second variant.
+      const dupSku = await editor
         .post('/api/v1/admin/products')
-        .send(product({ slug: 'x2' }))
-        .expect(409);
+        .send(
+          product({
+            variants: [
+              { sku: 'NEW-1', price: 1000, options: { color: 'black' } },
+              { sku: 'Sam-Rt38-Sl', price: 1000, options: { color: 'silver' } },
+            ],
+          }),
+        )
+        .expect(400);
+      expect(dupSku.body.errors.map((e: { path: string }) => e.path)).toEqual([
+        'slug',
+        'variants.1.sku',
+      ]);
     });
 
     it('syncs variants on update: keeps by id, adds new, removes missing', async () => {

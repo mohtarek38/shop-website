@@ -101,6 +101,23 @@ export class ProductsRepository {
     return { rows, total };
   }
 
+  /** Which of these identifiers already belong to another (non-deleted or deleted) product. */
+  async findTaken(
+    slug: string,
+    skus: string[],
+    excludeProductId?: string,
+  ): Promise<{ slugTaken: boolean; takenSkus: Set<string> }> {
+    const notThis = excludeProductId ? { not: excludeProductId } : undefined;
+    const [slugOwner, variants] = await Promise.all([
+      this.prisma.product.findFirst({ where: { slug, id: notThis }, select: { id: true } }),
+      this.prisma.productVariant.findMany({
+        where: { sku: { in: skus }, productId: notThis },
+        select: { sku: true },
+      }),
+    ]);
+    return { slugTaken: Boolean(slugOwner), takenSkus: new Set(variants.map((v) => v.sku)) };
+  }
+
   create(data: ProductWrite, variants: VariantWrite[]): Promise<ProductRow> {
     return this.prisma.product.create({
       data: {

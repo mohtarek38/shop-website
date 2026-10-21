@@ -14,7 +14,7 @@ import {
 import type { z } from 'zod';
 import { BrandsRepository } from './brands.repository.js';
 import { CategoriesRepository } from './categories.repository.js';
-import { invalidField, nestedValidationError } from './errors.js';
+import { alreadyExists, invalidField, nestedValidationError } from './errors.js';
 import { effectiveAttributes, toProduct, toProductListItem } from './mappers.js';
 import { ProductsRepository, type VariantWrite } from './products.repository.js';
 import { buildSearchText } from './search-text.js';
@@ -65,6 +65,7 @@ export class ProductsService {
   /** New products start as drafts; publishing is a separate permission. */
   async create(input: ProductInput): Promise<Product> {
     const prepared = await this.prepare(input);
+    await this.assertAvailable(prepared.product.slug, prepared.variants);
     return toProduct(await this.products.create(prepared.product, prepared.variants));
   }
 
@@ -77,6 +78,7 @@ export class ProductsService {
       }
     });
     const prepared = await this.prepare(input);
+    await this.assertAvailable(prepared.product.slug, prepared.variants, id);
     return toProduct(await this.products.update(id, prepared.product, prepared.variants));
   }
 
@@ -93,6 +95,21 @@ export class ProductsService {
   async remove(id: string): Promise<void> {
     await this.findOrThrow(id);
     await this.products.softDelete(id);
+  }
+
+  /** Slug and SKUs must be unique; report exactly which field clashes. */
+  private async assertAvailable(slug: string, variants: VariantWrite[], productId?: string) {
+    const taken = await this.products.findTaken(
+      slug,
+      variants.map((v) => v.sku),
+      productId,
+    );
+    const paths: (string | number)[][] = [];
+    if (taken.slugTaken) paths.push(['slug']);
+    variants.forEach((v, index) => {
+      if (taken.takenSkus.has(v.sku)) paths.push(['variants', index, 'sku']);
+    });
+    if (paths.length) throw alreadyExists(paths);
   }
 
   private async findOrThrow(id: string) {
