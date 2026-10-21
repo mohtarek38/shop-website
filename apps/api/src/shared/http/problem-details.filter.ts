@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
+import { STATUS_CODES } from 'node:http';
 import type { ProblemDetails } from '@shop/contracts';
 import type { Request, Response } from 'express';
 import { RequestValidationException } from './zod-validation.js';
@@ -38,7 +39,7 @@ export class ProblemDetailsFilter implements ExceptionFilter {
         title: 'Request validation failed',
         status: HttpStatus.BAD_REQUEST,
         errors: exception.issues.map((issue) => ({
-          path: issue.path.join('.'),
+          path: issue.path.map(String).join('.'),
           code: issue.code,
           message: issue.message,
         })),
@@ -56,7 +57,7 @@ export class ProblemDetailsFilter implements ExceptionFilter {
             : undefined;
       return {
         type: `${TYPE_BASE}${slug(HttpStatus[status] ?? 'error')}`,
-        title: exception.name.replace(/Exception$/, '').replace(/([a-z])([A-Z])/g, '$1 $2'),
+        title: STATUS_CODES[status] ?? 'Error',
         status,
         detail,
       };

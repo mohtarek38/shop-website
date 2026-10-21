@@ -207,6 +207,10 @@ describe('Identity (e2e)', () => {
       });
 
       await clerk.get('/api/v1/test-staff/orders').expect(401);
+      await clerk.get('/api/v1/me').expect(401);
+      // Public routes still work for them, as for any signed-out visitor.
+      await clerk.get('/api/health').expect(200);
+
       const retry = await request(server())
         .post('/api/auth/sign-in/email')
         .set('Origin', ORIGIN)

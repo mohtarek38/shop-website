@@ -34,16 +34,21 @@ export class AuthGuard implements CanActivate {
       this.reflector.getAllAndOverride<Permission[]>(REQUIRED_PERMISSIONS, targets) ?? [];
 
     const request = context.switchToHttp().getRequest<Request>();
-    const session = await this.auth.api.getSession({ headers: fromNodeHeaders(request.headers) });
-    if (session) request.auth = session;
+    const anonymousAllowed = isPublic && required.length === 0;
 
+    const session = await this.auth.api.getSession({ headers: fromNodeHeaders(request.headers) });
     if (!session) {
-      if (isPublic && required.length === 0) return true;
+      if (anonymousAllowed) return true;
       throw new UnauthorizedException('Sign in to continue');
     }
 
     const access = await this.identity.findUserAccess(session.user.id);
-    if (!access || access.disabledAt) throw new UnauthorizedException('Account is disabled');
+    if (!access || access.disabledAt) {
+      // A disabled account is treated as signed out: public pages still work.
+      if (anonymousAllowed) return true;
+      throw new UnauthorizedException('Account is disabled');
+    }
+    request.auth = session;
 
     if (required.length > 0) {
       const allowed =

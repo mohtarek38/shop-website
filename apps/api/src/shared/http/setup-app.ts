@@ -17,7 +17,14 @@ export function setupApp(app: INestApplication): void {
 
   express.set('trust proxy', config.TRUST_PROXY);
   express.disable('x-powered-by');
-  app.use(helmet());
+  app.use(
+    helmet({
+      // HTTPS is enforced by Caddy in production (ADR-0014). Helmet's default
+      // `upgrade-insecure-requests` made browsers fetch /api/docs assets over https on
+      // plain-http hosts (local dev), which broke the docs page.
+      contentSecurityPolicy: { directives: { upgradeInsecureRequests: null } },
+    }),
+  );
   mountAuth(app);
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
