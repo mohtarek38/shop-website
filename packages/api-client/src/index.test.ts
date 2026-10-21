@@ -71,3 +71,17 @@ describe('admin catalog client', () => {
     expect(fetch.mock.calls[0]![1]).toMatchObject({ method: 'DELETE' });
   });
 });
+
+describe('uploads', () => {
+  it('sends files as multipart without a JSON content type', async () => {
+    const fetch = vi.fn().mockResolvedValue(jsonResponse(201, { id: 'm1' }));
+    await createApiClient({ fetch }).admin.media.uploadImage(
+      new Blob(['x'], { type: 'image/png' }),
+      'a.png',
+    );
+    const init = fetch.mock.calls[0]![1] as RequestInit;
+    expect(init.body).toBeInstanceOf(FormData);
+    expect(init.headers).toBeUndefined();
+    expect((init.body as FormData).get('file')).toBeInstanceOf(Blob);
+  });
+});

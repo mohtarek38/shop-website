@@ -100,6 +100,15 @@ describe('productToForm', () => {
       warrantyMonths: 24,
       seoTitle: null,
       seoDescription: null,
+      images: [
+        {
+          id: 'm1',
+          width: 800,
+          height: 800,
+          urls: { thumb: '/t.webp', md: '/m.webp', lg: '/l.webp', original: '/o.png' },
+          alt: null,
+        },
+      ],
       variants: [
         {
           id,
@@ -124,6 +133,9 @@ describe('productToForm', () => {
     expect(form.specs).toEqual({ capacity_liters: '380', no_frost: 'true' });
     expect(form.name).toEqual({ ar: 'ثلاجة', en: '' });
     expect(form.warrantyMonths).toBe('24');
+    expect(form.images).toEqual([
+      { mediaId: 'm1', urls: { thumb: '/t.webp', md: '/m.webp' }, alt: { ar: '', en: '' } },
+    ]);
     expect(form.variants[0]).toMatchObject({
       id,
       price: '24999',

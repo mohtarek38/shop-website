@@ -46,7 +46,16 @@ export interface ProductFormValues {
   warrantyMonths: string;
   seoTitle: { ar: string; en: string };
   seoDescription: { ar: string; en: string };
+  /** In display order; the first is the main image. */
+  images: ImageFormValues[];
   variants: VariantFormValues[];
+}
+
+export interface ImageFormValues {
+  mediaId: string;
+  /** For previews only; not sent back to the API. */
+  urls: { thumb: string; md: string };
+  alt: { ar: string; en: string };
 }
 
 export interface FormIssue {
@@ -93,6 +102,7 @@ export function emptyProduct(categoryId = ''): ProductFormValues {
     warrantyMonths: '',
     seoTitle: { ar: '', en: '' },
     seoDescription: { ar: '', en: '' },
+    images: [],
     variants: [emptyVariant()],
   };
 }
@@ -110,6 +120,11 @@ export function productToForm(product: Product): ProductFormValues {
     warrantyMonths: intText(product.warrantyMonths),
     seoTitle: text(product.seoTitle),
     seoDescription: text(product.seoDescription),
+    images: product.images.map((image) => ({
+      mediaId: image.id,
+      urls: { thumb: image.urls.thumb, md: image.urls.md },
+      alt: text(image.alt),
+    })),
     variants: product.variants.map((v) => ({
       id: v.id,
       sku: v.sku,
@@ -162,6 +177,10 @@ export function formToInput(
     warrantyMonths: optionalInt(values.warrantyMonths),
     seoTitle: optionalText(values.seoTitle),
     seoDescription: optionalText(values.seoDescription),
+    images: values.images.map((image) => ({
+      mediaId: image.mediaId,
+      alt: optionalText(image.alt),
+    })),
     variants: values.variants.map((v, i) => ({
       id: v.id,
       sku: v.sku,

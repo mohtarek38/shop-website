@@ -34,6 +34,7 @@ import { emptyProduct, formToInput, type ProductFormValues, productToForm } from
 import { brandsQuery, catalogKeys, categoriesQuery, productQuery } from './queries';
 import { SpecField } from './spec-field';
 import { StatusBadge } from './status-badge';
+import { ImagesEditor } from './images-editor';
 import { VariantsEditor } from './variants-editor';
 
 export function NewProductPage() {
@@ -125,7 +126,13 @@ function ProductEditor({
   const showErrors = (list: FieldError[]) => {
     for (const { path, message } of list) {
       // Errors about the whole variant list (e.g. duplicate SKUs) go on its root.
-      const target = path === 'variants' ? 'variants.root' : path || 'root';
+      // Errors about whole lists (duplicate SKUs, a missing image) go on the list's root.
+      const target =
+        path === 'variants'
+          ? 'variants.root'
+          : path.startsWith('images')
+            ? 'images.root'
+            : path || 'root';
       setError(target as Path<ProductFormValues>, { message });
     }
     setFormError(t('errors.check_fields'));
@@ -345,6 +352,11 @@ function ProductEditor({
               multiline
               optional
             />
+          </Section>
+
+          <Section title={t('images.title')} hint={t('images.sectionHint')}>
+            {fieldError('images.root') && <Alert tone="danger">{fieldError('images.root')}</Alert>}
+            <ImagesEditor control={control} disabled={!canWrite} />
           </Section>
 
           <Section title={t('productEditor.specs')}>

@@ -114,7 +114,12 @@
     "conflict": "This conflicts with existing data",
     "forbidden": "You don't have permission to do this",
     "check_fields": "Check the highlighted fields",
-    "generic": "Something went wrong. Try again."
+    "generic": "Something went wrong. Try again.",
+    "unsupported_image": "Unsupported file type. Use JPEG, PNG, WebP or AVIF",
+    "image_too_small": "The image is too small (at least 300px)",
+    "image_too_large": "The image is larger than 10 MB",
+    "file_required": "Choose a file",
+    "duplicate_images": "The same image is added twice"
   },
   "status": {
     "draft": "Draft",
@@ -229,5 +234,16 @@
     "empty": "No brands yet.",
     "editTitle": "Edit brand",
     "deleteConfirm": "The brand will be deleted."
+  },
+  "images": {
+    "title": "Images",
+    "sectionHint": "The first image is the main one in the shop.",
+    "main": "Main",
+    "add": "Add images",
+    "uploading": "Uploading {{count}}…",
+    "moveEarlier": "Move earlier",
+    "moveLater": "Move later",
+    "hint": "JPEG, PNG, WebP or AVIF, up to 10 MB and at least 300px. You can drag and drop images here.",
+    "tooMany": "A product can have up to {{max}} images."
   }
 }

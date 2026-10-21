@@ -2,7 +2,7 @@ import { PRODUCT_STATUSES } from '@shop/contracts';
 import { buttonVariants, Card, Input, Select } from '@shop/ui';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { Plus, Search } from 'lucide-react';
+import { ImageOff, Plus, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../components/page-header';
@@ -130,8 +130,20 @@ export function ProductsPage() {
                   <Link
                     to="/products/$productId"
                     params={{ productId: p.id }}
-                    className="font-medium text-primary-hover hover:underline"
+                    className="flex items-center gap-3 font-medium text-primary-hover hover:underline"
                   >
+                    <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-control bg-surface">
+                      {p.thumbnail ? (
+                        <img
+                          src={p.thumbnail}
+                          alt=""
+                          className="size-full object-contain"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <ImageOff className="size-4 text-muted" aria-hidden />
+                      )}
+                    </span>
                     {localize(p.name)}
                   </Link>
                 </td>

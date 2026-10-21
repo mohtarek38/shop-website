@@ -4,6 +4,7 @@ import {
   type Category,
   type CategoryInput,
   type Locale,
+  type MediaAsset,
   type Me,
   normalizeEgyptianMobile,
   type Product,
@@ -47,11 +48,13 @@ export function createApiClient(options: ApiClientOptions = {}) {
   const doFetch = options.fetch ?? globalThis.fetch.bind(globalThis);
 
   async function request<T>(method: Method, path: string, body?: unknown): Promise<T> {
+    // FormData (file uploads) sets its own multipart content type.
+    const isForm = typeof FormData !== 'undefined' && body instanceof FormData;
     const response = await doFetch(`${baseUrl}${path}`, {
       method,
       credentials: 'include',
-      headers: body === undefined ? undefined : { 'content-type': 'application/json' },
-      body: body === undefined ? undefined : JSON.stringify(body),
+      headers: body === undefined || isForm ? undefined : { 'content-type': 'application/json' },
+      body: body === undefined ? undefined : isForm ? body : JSON.stringify(body),
     });
 
     if (!response.ok) throw new ApiError(response.status, await readProblem(response));
@@ -88,6 +91,14 @@ export function createApiClient(options: ApiClientOptions = {}) {
 
     /** Staff-only endpoints (permission-guarded by the API). */
     admin: {
+      media: {
+        /** Uploads one product image; the API stores resized WebP versions. */
+        uploadImage: (file: Blob, filename = 'image') => {
+          const form = new FormData();
+          form.append('file', file, filename);
+          return request<MediaAsset>('POST', '/api/v1/admin/media/images', form);
+        },
+      },
       categories: crud<Category, CategoryInput>(request, '/api/v1/admin/categories'),
       brands: crud<Brand, BrandInput>(request, '/api/v1/admin/brands'),
       products: {
