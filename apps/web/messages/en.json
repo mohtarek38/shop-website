@@ -1,0 +1,55 @@
+{
+  "common": {
+    "menu": "Menu",
+    "search": "Search",
+    "searchPlaceholder": "Search for a product, brand or model…",
+    "cart": "Cart",
+    "wishlist": "Wishlist",
+    "account": "Account",
+    "switchLanguage": "العربية",
+    "switchLanguageLabel": "Switch to Arabic",
+    "currency": "EGP"
+  },
+  "nav": {
+    "refrigerators": "Refrigerators",
+    "washers": "Washing machines",
+    "tvs": "TVs",
+    "acs": "Air conditioners",
+    "cookers": "Cookers",
+    "small": "Small appliances",
+    "offers": "Offers"
+  },
+  "home": {
+    "heroBadge": "Coming soon",
+    "heroTitle": "Home and electric appliances at the best prices",
+    "heroSubtitle": "Delivery across Egypt with cash on delivery",
+    "heroCta": "Browse categories",
+    "shopByCategory": "Shop by category",
+    "trust": {
+      "delivery": "Delivery across Egypt",
+      "cod": "Cash on delivery",
+      "warranty": "Official warranty",
+      "support": "Customer support"
+    }
+  },
+  "footer": {
+    "help": "Help",
+    "trackOrder": "Track order",
+    "returns": "Returns policy",
+    "faq": "FAQ",
+    "about": "About us",
+    "terms": "Terms and conditions",
+    "privacy": "Privacy policy",
+    "paymentMethods": "Payment methods",
+    "cod": "Cash on delivery",
+    "instapay": "InstaPay",
+    "wallets": "Vodafone Cash",
+    "bank": "Bank transfer",
+    "rights": "All rights reserved"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "This page may have moved, or the link is incorrect.",
+    "home": "Back to home"
+  }
+}

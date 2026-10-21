@@ -1,0 +1,35 @@
+{
+  "name": "@shop/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "brand-assets": "node ../../packages/brand/scripts/copy-assets.mjs public/brand",
+    "dev": "pnpm brand-assets && next dev --port 3000",
+    "build": "node ../../packages/brand/scripts/check-brand.mjs && pnpm brand-assets && next build",
+    "start": "next start --port 3000",
+    "lint": "eslint .",
+    "typecheck": "next typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "@shop/api-client": "workspace:*",
+    "@shop/brand": "workspace:*",
+    "@shop/contracts": "workspace:*",
+    "@shop/ui": "workspace:*",
+    "lucide-react": "^1.60.0",
+    "next": "^16.4.2",
+    "next-intl": "^4.14.9",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@shop/config": "workspace:*",
+    "@tailwindcss/turbopack": "^4.3.3",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint-config-next": "^16.4.2",
+    "eslint-config-prettier": "^10.1.8",
+    "tailwindcss": "^4.3.3"
+  }
+}

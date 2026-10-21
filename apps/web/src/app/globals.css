@@ -1,0 +1,21 @@
+@import 'tailwindcss';
+@import '@shop/brand/tokens.css';
+
+/* Shared components ship as source; let Tailwind see their classes. */
+@source '../../../../packages/ui/src';
+
+:root {
+  /* Self-hosted IBM Plex Sans Arabic from next/font (see [locale]/layout.tsx). */
+  --font-family: var(--font-plex), system-ui, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--text);
+  font-family: var(--font-family);
+  line-height: 1.6;
+}
+
+:lang(ar) body {
+  line-height: 1.7;
+}
