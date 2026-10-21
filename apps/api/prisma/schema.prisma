@@ -1,0 +1,11 @@
+// Logical design: docs/DATABASE.md. Models are added phase by phase.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}

@@ -1,0 +1,9 @@
+{
+  "extends": "@shop/config/tsconfig/nest.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": ".",
+    "types": ["node", "vitest/globals"]
+  },
+  "include": ["src", "test", "prisma.config.ts", "vitest.config.ts", "vitest.config.e2e.ts"]
+}

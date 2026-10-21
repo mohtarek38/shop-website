@@ -27,3 +27,4 @@ Copy [template.md](template.md) for new records. Number them sequentially.
 | [0019](0019-printable-html-invoices.md)                 | Printable HTML invoices instead of a PDF library           | Accepted |
 | [0020](0020-order-payment-state-machines-and-events.md) | Separate order/payment state machines + domain events      | Accepted |
 | [0021](0021-brand-as-configuration.md)                  | Brand as configuration (`packages/brand`)                  | Accepted |
+| [0022](0022-own-zod-validation-pipe.md)                 | Own Zod validation pipe instead of nestjs-zod              | Accepted |

@@ -14,7 +14,9 @@
     "test": "turbo run test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:up": "docker compose -f infra/docker-compose.dev.yml up -d --wait",
+    "db:down": "docker compose -f infra/docker-compose.dev.yml down"
   },
   "lint-staged": {
     "*.{ts,tsx,js,mjs,cjs}": "prettier --write",

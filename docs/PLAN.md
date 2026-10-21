@@ -64,12 +64,12 @@ An online shop selling home and electric appliances in **Egypt**, operated by a 
 
 | Library                                                              | Purpose                                                                                                     |
 | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| NestJS                                                               | Framework (modules, dependency injection)                                                                   |
+| NestJS 12 (ESM)                                                      | Framework (modules, dependency injection)                                                                   |
 | Prisma                                                               | ORM + migrations                                                                                            |
 | Better Auth (+ Prisma adapter, `nestjs-better-auth` or manual mount) | Authentication: sessions, email/password, phone+password (username plugin), Google, admin plugin, 2FA later |
 | pg-boss                                                              | Background jobs stored in Postgres                                                                          |
 | @nestjs/event-emitter                                                | In-process domain events                                                                                    |
-| nestjs-zod                                                           | Request validation with shared schemas                                                                      |
+| Own Zod pipe + `@ZodBody`/`@ZodQuery` (ADR-0022)                     | Request validation and OpenAPI docs from shared schemas                                                     |
 | @nestjs/swagger                                                      | OpenAPI docs at `/api/docs`                                                                                 |
 | @nestjs/throttler                                                    | Rate limiting on non-auth endpoints                                                                         |
 | helmet                                                               | Security headers                                                                                            |
