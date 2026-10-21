@@ -305,6 +305,7 @@ Driver balance = `SUM(cash_collected) WHERE driver_id = ? AND settlement_id IS N
 - `search_vector` and the trigram index arrive with storefront search (Phase 2.5); until then the dashboard matches every search word against the normalized `search_text`.
 - Soft-deleting a product suffixes its slug and SKUs (`--deleted-…`) so they can be reused.
 - CHECK constraints back the app validation: price > 0, sale price below price, a category can't be its own parent.
+- `product_media.variant_id` (variant-specific images) is deferred; all images belong to the product for now.
 
 ---
 
