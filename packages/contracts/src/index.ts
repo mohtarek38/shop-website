@@ -2,6 +2,7 @@ export * from './arabic';
 export * from './catalog';
 export * from './http';
 export * from './identity';
+export * from './inventory';
 export * from './locale';
 export * from './localized-text';
 export * from './media';

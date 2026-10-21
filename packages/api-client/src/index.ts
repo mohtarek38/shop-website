@@ -3,7 +3,10 @@ import {
   type BrandInput,
   type Category,
   type CategoryInput,
+  type InventoryListQuery,
+  type InventoryRow,
   type Locale,
+  type LowStockThresholdInput,
   type MediaAsset,
   type Me,
   normalizeEgyptianMobile,
@@ -14,6 +17,11 @@ import {
   type ProductStatus,
   type ProblemDetails,
   type RegisterCustomerInput,
+  type StockAdjustmentInput,
+  type StockLocation,
+  type StockLocationInput,
+  type StockMovement,
+  type StockTransferInput,
 } from '@shop/contracts';
 
 export interface Page<T> {
@@ -91,6 +99,25 @@ export function createApiClient(options: ApiClientOptions = {}) {
 
     /** Staff-only endpoints (permission-guarded by the API). */
     admin: {
+      stockLocations: {
+        list: () => request<StockLocation[]>('GET', '/api/v1/admin/stock-locations'),
+        create: (input: StockLocationInput) =>
+          request<StockLocation>('POST', '/api/v1/admin/stock-locations', input),
+        update: (id: string, input: StockLocationInput) =>
+          request<StockLocation>('PUT', `/api/v1/admin/stock-locations/${id}`, input),
+      },
+      inventory: {
+        list: (query: InventoryListQuery = {}) =>
+          request<Page<InventoryRow>>('GET', `/api/v1/admin/inventory${toQuery(query)}`),
+        movements: (variantId: string) =>
+          request<StockMovement[]>('GET', `/api/v1/admin/inventory/${variantId}/movements`),
+        adjust: (input: StockAdjustmentInput) =>
+          request<void>('POST', '/api/v1/admin/inventory/adjustments', input),
+        transfer: (input: StockTransferInput) =>
+          request<void>('POST', '/api/v1/admin/inventory/transfers', input),
+        setThreshold: (input: LowStockThresholdInput) =>
+          request<void>('PUT', '/api/v1/admin/inventory/thresholds', input),
+      },
       media: {
         /** Uploads one product image; the API stores resized WebP versions. */
         uploadImage: (file: Blob, filename = 'image') => {
@@ -131,9 +158,10 @@ function crud<T, Input>(request: RequestFn, base: string) {
 }
 
 /** `?a=1&b=x`, skipping empty values. */
-function toQuery(params: Record<string, string | number | undefined>): string {
+function toQuery(params: Record<string, string | number | boolean | undefined>): string {
   const entries = Object.entries(params).filter(
-    (entry): entry is [string, string | number] => entry[1] !== undefined && entry[1] !== '',
+    (entry): entry is [string, string | number | boolean] =>
+      entry[1] !== undefined && entry[1] !== '' && entry[1] !== false,
   );
   return entries.length ? `?${new URLSearchParams(entries.map(([k, v]) => [k, String(v)]))}` : '';
 }

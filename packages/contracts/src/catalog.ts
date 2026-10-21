@@ -255,6 +255,8 @@ export interface ProductVariant {
   saleEndsAt: string | null;
   /** What the customer pays right now (sale price inside its window, else price). */
   currentPrice: number;
+  /** Units available to sell across active stock locations (on hand − reserved). */
+  available: number;
   weightGrams: number | null;
   lengthMm: number | null;
   widthMm: number | null;
@@ -298,6 +300,8 @@ export interface ProductListItem {
   variantCount: number;
   /** Lowest current price across active variants, or null if none are active. */
   priceFrom: number | null;
+  /** Units available across active variants and locations. */
+  available: number;
   updatedAt: string;
 }
 
