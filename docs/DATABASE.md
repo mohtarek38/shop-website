@@ -366,6 +366,7 @@ Private media is served only through short-lived signed URLs from the API.
 | type           | enum            | `receive`, `adjust`, `reserve`, `release`, `fulfil`, `return`, `transfer_out`, `transfer_in`, `write_off` |
 | on_hand_delta  | int             |                                                                                                           |
 | reserved_delta | int             |                                                                                                           |
+| on_hand_after  | int             | Balance after this movement, so history reads without summing                                             |
 | reason         | text?           | Required for `adjust` and `write_off`                                                                     |
 | reference_type | text?           | `order`, `transfer`, `import`                                                                             |
 | reference_id   | uuid?           |                                                                                                           |
@@ -373,6 +374,16 @@ Private media is served only through short-lived signed URLs from the API.
 | created_at     | timestamptz     |                                                                                                           |
 
 Stock changes use `SELECT … FOR UPDATE` on the `stock_level` rows (row locking) to prevent races.
+
+Implementation notes (Phase 2):
+
+- A missing `stock_level` row means zero. Changes first `INSERT … ON CONFLICT DO NOTHING` the
+  row, then lock it, so two first-time receipts for the same variant cannot race.
+- CHECK constraints keep `on_hand` and `reserved` non-negative; the service also refuses a
+  write-off or count that would leave `on_hand` below `reserved`.
+- A transfer writes a `transfer_out` and a `transfer_in` movement sharing one `reference_id`.
+- The variant is "low" when available ≤ `low_stock_threshold` at any active location
+  (NULL threshold: never low). The storefront only sees in stock / low / out of stock.
 
 ---
 

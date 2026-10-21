@@ -444,7 +444,7 @@ Each phase ends with a deploy to production (behind basic auth until launch).
 - [x] Categories + attribute templates, brands, products, variants (API + sample catalog)
 - [x] Dashboard catalog screens: products (list, filters, editor with spec form and variants), categories (spec-template builder), brands
 - [x] Media upload → sharp → R2 (local disk in development)
-- [ ] Stock locations + stock levels + adjustments (ledger)
+- [x] Stock locations + stock levels + adjustments (ledger), transfers and low-stock thresholds
 - [ ] CSV/Excel import/export
 - [ ] Storefront: home, category listing with filters, product page, comparison, search
 - [ ] SEO: sitemap, JSON-LD, hreflang, metadata
@@ -468,7 +468,7 @@ Each phase ends with a deploy to production (behind basic auth until launch).
 - [ ] Failed deliveries, re-assignment, returns
 - [ ] Cash settlement
 - [ ] Courier shipments (manual tracking number)
-- [ ] Low-stock alerts, stock transfers between locations
+- [ ] Low-stock alerts (notifications; thresholds and transfers already in Phase 2)
 - [ ] Audit log viewer, customer block list
 - **Exit:** daily operations run entirely in the system.
 
