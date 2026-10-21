@@ -430,11 +430,11 @@ Each phase ends with a deploy to production (behind basic auth until launch).
 
 ### Phase 1 — Foundation
 
-- [ ] Monorepo, tooling, shared config, CI pipeline
-- [ ] Docker dev environment, env validation, logging, error format
-- [ ] Prisma schema v1 + migrations + seed
-- [ ] **Spike:** Better Auth in NestJS (phone+password, synthetic email, same-origin cookies)
-- [ ] Identity module: staff login, roles/permissions, guards
+- [x] Monorepo, tooling, shared config, CI pipeline
+- [x] Docker dev environment, env validation, logging, error format
+- [x] Prisma schema v1 (identity) + migrations + seed
+- [x] **Spike:** Better Auth in NestJS (phone+password, synthetic email): passed, see ADR-0009
+- [x] Identity module: staff login, roles/permissions, guards
 - [ ] Storefront and dashboard shells with ar/en + RTL
 - [ ] EC2 provisioned, Caddy, first deploy, backups running
 - **Exit:** a staff member can log in to the deployed dashboard in Arabic and English.
