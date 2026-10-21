@@ -4,8 +4,10 @@ import type { Health } from '@shop/contracts';
 import type { Response } from 'express';
 import { APP_CONFIG, type AppConfig } from '../../shared/config/config.js';
 import { PrismaService } from '../../shared/database/prisma.service.js';
+import { Public } from '../identity/index.js';
 
 @ApiTags('health')
+@Public()
 @Controller({ path: 'health', version: VERSION_NEUTRAL })
 export class HealthController {
   constructor(

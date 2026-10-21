@@ -2,12 +2,14 @@ import { type INestApplication, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import helmet from 'helmet';
+import { mountAuth } from '../../modules/identity/index.js';
 import { APP_CONFIG, type AppConfig } from '../config/config.js';
 import { ProblemDetailsFilter } from './problem-details.filter.js';
 
 /**
  * HTTP setup shared by main.ts and e2e tests, so tests exercise the real configuration.
- * Routes: /api/v1/... (versioned), /api/health (version-neutral), /api/docs (OpenAPI).
+ * Routes: /api/v1/... (versioned), /api/health (version-neutral), /api/auth/* (Better Auth),
+ * /api/docs (OpenAPI).
  */
 export function setupApp(app: INestApplication): void {
   const config = app.get<AppConfig>(APP_CONFIG);
@@ -16,6 +18,7 @@ export function setupApp(app: INestApplication): void {
   express.set('trust proxy', config.TRUST_PROXY);
   express.disable('x-powered-by');
   app.use(helmet());
+  mountAuth(app);
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
   app.useGlobalFilters(new ProblemDetailsFilter());

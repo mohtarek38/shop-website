@@ -1,6 +1,10 @@
 import { loadConfig } from './config.js';
 
-const validEnv = { DATABASE_URL: 'postgresql://shop:shop@localhost:5433/shop' };
+const validEnv = {
+  DATABASE_URL: 'postgresql://shop:shop@localhost:5433/shop',
+  AUTH_SECRET: 'x'.repeat(32),
+  AUTH_BASE_URL: 'http://localhost:4000',
+};
 
 describe('loadConfig', () => {
   it('applies defaults', () => {
@@ -17,9 +21,18 @@ describe('loadConfig', () => {
     ).toBe(true);
   });
 
+  it('splits trusted origins', () => {
+    const config = loadConfig({
+      ...validEnv,
+      AUTH_TRUSTED_ORIGINS: 'http://localhost:3000, http://localhost:5173',
+    });
+    expect(config.AUTH_TRUSTED_ORIGINS).toEqual(['http://localhost:3000', 'http://localhost:5173']);
+  });
+
   it('fails fast with a readable message', () => {
     expect(() => loadConfig({})).toThrow(/DATABASE_URL/);
     expect(() => loadConfig({ DATABASE_URL: 'mysql://x' })).toThrow(/DATABASE_URL/);
     expect(() => loadConfig({ ...validEnv, PORT: 'abc' })).toThrow(/PORT/);
+    expect(() => loadConfig({ ...validEnv, AUTH_SECRET: 'short' })).toThrow(/AUTH_SECRET/);
   });
 });

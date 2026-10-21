@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 import { z } from 'zod';
 import request from 'supertest';
 import { AppModule } from '../src/app.module.js';
+import { Public } from '../src/modules/identity/index.js';
 import { ZodBody } from '../src/shared/http/zod-validation.js';
 import { setupApp } from '../src/shared/http/setup-app.js';
 
@@ -11,6 +12,7 @@ process.loadEnvFile('.env');
 
 const echoSchema = z.object({ quantity: z.number().int().positive() });
 
+@Public()
 @Controller('echo')
 class EchoController {
   @Post()

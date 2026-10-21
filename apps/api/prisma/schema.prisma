@@ -1,4 +1,5 @@
 // Logical design: docs/DATABASE.md. Models are added phase by phase.
+// Conventions: UUIDv7 ids, snake_case tables/columns, timestamptz, money as integer piasters.
 
 generator client {
   provider     = "prisma-client"
@@ -8,4 +9,146 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+// ─── identity: Better Auth tables (ADR-0009) ───────────────────────────────
+// Field names must match Better Auth's model; column names are mapped to snake_case.
+
+enum UserType {
+  customer
+  staff
+
+  @@map("user_type")
+}
+
+enum Locale {
+  ar
+  en
+
+  @@map("locale")
+}
+
+model User {
+  id              String    @id @default(uuid(7)) @db.Uuid
+  name            String
+  /// Real email, or synthetic `<digits>@phone.invalid` for phone-only customers.
+  email           String    @unique
+  emailVerified   Boolean   @default(false) @map("email_verified")
+  image           String?
+  /// Username plugin: E.164 phone for customers who log in by phone.
+  username        String?   @unique
+  displayUsername String?   @map("display_username")
+  type            UserType  @default(customer)
+  locale          Locale    @default(ar)
+  /// Set when staff deactivate an account; blocks new sessions and all requests.
+  disabledAt      DateTime? @map("disabled_at") @db.Timestamptz(6)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  sessions Session[]
+  accounts Account[]
+  roles    UserRole[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  token     String   @unique
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(6)
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  userId    String   @map("user_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(uuid(7)) @db.Uuid
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  userId                String    @map("user_id") @db.Uuid
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  idToken               String?   @map("id_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at") @db.Timestamptz(6)
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at") @db.Timestamptz(6)
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(uuid(7)) @db.Uuid
+  identifier String
+  value      String
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz(6)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+// ─── identity: our RBAC (PLAN §6.2) ────────────────────────────────────────
+
+/// Seeded from `@shop/contracts` PERMISSIONS; read-only at runtime.
+model Permission {
+  key         String @id
+  module      String
+  description Json?
+
+  roles RolePermission[]
+
+  @@map("permission")
+}
+
+model Role {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  key       String   @unique
+  /// LocalizedText {ar, en}
+  name      Json
+  /// System roles can't be deleted; `owner` always has every permission.
+  isSystem  Boolean  @default(false) @map("is_system")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  permissions RolePermission[]
+  users       UserRole[]
+
+  @@map("role")
+}
+
+model RolePermission {
+  roleId        String @map("role_id") @db.Uuid
+  permissionKey String @map("permission_key")
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionKey], references: [key], onDelete: Cascade)
+
+  @@id([roleId, permissionKey])
+  @@map("role_permission")
+}
+
+model UserRole {
+  userId String @map("user_id") @db.Uuid
+  roleId String @map("role_id") @db.Uuid
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@index([roleId])
+  @@map("user_role")
 }

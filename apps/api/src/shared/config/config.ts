@@ -13,6 +13,20 @@ export const envSchema = z.object({
   TRUST_PROXY: z.string().default('loopback, uniquelocal'),
   /** OpenAPI docs at /api/docs. Defaults to on outside production. */
   SWAGGER_ENABLED: booleanString.optional(),
+  /** Signs session cookies. Generate with: openssl rand -base64 32 */
+  AUTH_SECRET: z.string().min(32),
+  /** Public origin the API is reached at, e.g. https://example.com (cookies become Secure on https). */
+  AUTH_BASE_URL: z.url(),
+  /** Comma-separated origins allowed to call auth endpoints (storefront + dashboard). */
+  AUTH_TRUSTED_ORIGINS: z
+    .string()
+    .default('')
+    .transform((value) =>
+      value
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean),
+    ),
 });
 
 export type AppConfig = Omit<z.infer<typeof envSchema>, 'SWAGGER_ENABLED'> & {
