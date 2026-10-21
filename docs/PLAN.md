@@ -435,7 +435,7 @@ Each phase ends with a deploy to production (behind basic auth until launch).
 - [x] Prisma schema v1 (identity) + migrations + seed
 - [x] **Spike:** Better Auth in NestJS (phone+password, synthetic email): passed, see ADR-0009
 - [x] Identity module: staff login, roles/permissions, guards
-- [ ] Storefront and dashboard shells with ar/en + RTL
+- [x] Storefront and dashboard shells with ar/en + RTL (staff login, permission-filtered menu)
 - [ ] EC2 provisioned, Caddy, first deploy, backups running
 - **Exit:** a staff member can log in to the deployed dashboard in Arabic and English.
 

@@ -26,15 +26,25 @@ pnpm db:up                                   # Postgres (localhost:5433) + Mailp
 cp apps/api/.env.example apps/api/.env
 pnpm --filter @shop/api db:deploy            # apply migrations
 pnpm --filter @shop/api db:seed              # roles, permissions, dev owner account
-pnpm dev                                     # API on http://localhost:4000/api (docs at /api/docs)
+pnpm dev                                     # all apps
 ```
+
+| App        | URL                                                                     |
+| ---------- | ----------------------------------------------------------------------- |
+| Storefront | http://localhost:3000 (redirects to `/ar`)                              |
+| Dashboard  | http://localhost:5173 (sign in with the dev owner from `apps/api/.env`) |
+| API        | http://localhost:4000/api (OpenAPI docs at `/api/docs`)                 |
+
+Both frontends call the API through `/api` on their own origin, like production. In development, cookies on `localhost` are shared between ports, so the storefront and dashboard share a session; in production they're separate hosts.
 
 Checks (same as CI):
 
 ```bash
-pnpm turbo run build lint typecheck test
+ALLOW_BRAND_PLACEHOLDERS=true pnpm turbo run build lint typecheck test
 pnpm --filter @shop/api test:e2e             # uses a disposable shop_test database
 ```
+
+`ALLOW_BRAND_PLACEHOLDERS=true` is needed for production builds until the shop name and domain are set in `packages/brand` (ADR-0021).
 
 ## Repository layout
 

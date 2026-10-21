@@ -26,3 +26,10 @@ Customers are in Egypt. Arabic is primary, English secondary. Staff use both. Ad
 
 - **Separate translation tables:** more joins and more complexity for two languages.
 - **Columns per language (`name_ar`, `name_en`):** a schema change for every new language.
+
+## Implementation notes (2026-10-21)
+
+- **`/` always opens Arabic.** Browser-language detection is off (`localeDetection: false`), so links and SEO are predictable; visitors switch with the header button, which keeps them on the same page (`/ar/x` ↔ `/en/x`).
+- **Dashboard language follows the account.** Staff change it in the top bar; it's saved with `PATCH /api/v1/me` and applied on every device after sign-in. The login page uses the last language used on that device.
+- **RTL lint rule:** `@shop/config/eslint/rtl` rejects physical Tailwind classes (`ml-`, `pr-`, `text-left`, …) in both apps.
+- next-intl is wired with a direct `next-intl/config` alias instead of `next-intl/plugin`, which loads a native compiler (`@swc/core`) only needed for an optional message-extraction feature.
