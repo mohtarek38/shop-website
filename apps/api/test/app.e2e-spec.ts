@@ -1,14 +1,11 @@
 import { Controller, type INestApplication, Post } from '@nestjs/common';
-import { Test } from '@nestjs/testing';
 import { z } from 'zod';
 import request from 'supertest';
-import { AppModule } from '../src/app.module.js';
 import { Public } from '../src/modules/identity/index.js';
 import { ZodBody } from '../src/shared/http/zod-validation.js';
-import { setupApp } from '../src/shared/http/setup-app.js';
+import { createTestApp } from './create-test-app.js';
 
-// Requires the dev database: pnpm db:up
-process.loadEnvFile('.env');
+// Environment comes from test/setup-env.ts (.env locally, workflow env in CI).
 
 const echoSchema = z.object({ quantity: z.number().int().positive() });
 
@@ -25,13 +22,7 @@ describe('API (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
-      controllers: [EchoController],
-    }).compile();
-    app = moduleRef.createNestApplication({ logger: false });
-    setupApp(app);
-    await app.init();
+    app = await createTestApp([EchoController]);
   });
 
   afterAll(async () => {
@@ -46,7 +37,11 @@ describe('API (e2e)', () => {
   it('unknown routes return RFC 9457 problem details', async () => {
     const res = await request(app.getHttpServer()).get('/api/v1/does-not-exist').expect(404);
     expect(res.headers['content-type']).toMatch(/application\/problem\+json/);
-    expect(res.body).toMatchObject({ status: 404, instance: '/api/v1/does-not-exist' });
+    expect(res.body).toMatchObject({
+      title: 'Not Found',
+      status: 404,
+      instance: '/api/v1/does-not-exist',
+    });
   });
 
   it('validates bodies with shared Zod schemas on versioned routes', async () => {
@@ -64,9 +59,19 @@ describe('API (e2e)', () => {
     ]);
   });
 
-  it('sets security headers', async () => {
+  it('sets security headers without forcing HTTPS sub-resources', async () => {
     const res = await request(app.getHttpServer()).get('/api/health');
     expect(res.headers['x-content-type-options']).toBe('nosniff');
     expect(res.headers['x-powered-by']).toBeUndefined();
+    // HTTPS is enforced by Caddy in production; this directive broke /api/docs on http.
+    expect(res.headers['content-security-policy']).not.toContain('upgrade-insecure-requests');
+  });
+
+  it('serves the OpenAPI docs page and its assets', async () => {
+    const page = await request(app.getHttpServer()).get('/api/docs').expect(200);
+    expect(page.text).toContain('swagger-ui-bundle.js');
+    await request(app.getHttpServer()).get('/api/docs/swagger-ui-bundle.js').expect(200);
+    const spec = await request(app.getHttpServer()).get('/api/docs-json').expect(200);
+    expect(Object.keys(spec.body.paths)).toContain('/api/v1/me');
   });
 });
