@@ -191,6 +191,17 @@ describe('Identity (e2e)', () => {
       expect((await owner.get('/api/v1/me')).body.locale).toBe('en');
     });
 
+    it('keeps existing sessions when the staff seed runs again', async () => {
+      const owner = await signInStaff('owner@test.local');
+      await ensureStaffUser(prisma, app.get<Auth>(AUTH), {
+        name: 'Owner',
+        email: 'owner@test.local',
+        password: STAFF_PASSWORD,
+        roles: ['owner'],
+      });
+      await owner.get('/api/v1/me').expect(200);
+    });
+
     it('gives the owner every permission', async () => {
       const owner = await signInStaff('owner@test.local');
       await owner.get('/api/v1/test-staff/settings').expect(200);

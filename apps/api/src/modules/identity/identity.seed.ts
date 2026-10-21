@@ -66,6 +66,9 @@ export async function ensureStaffUser(
     const result = await auth.api.signUpEmail({
       body: { name: input.name, email, password: input.password },
     });
+    // Sign-up auto-signs in; staff log in from the dashboard instead. Only this new
+    // account's session is removed: re-running the seed must not sign anyone out.
+    await prisma.session.deleteMany({ where: { userId: result.user.id } });
     user = await prisma.user.findUniqueOrThrow({ where: { id: result.user.id } });
   }
 
@@ -73,8 +76,6 @@ export async function ensureStaffUser(
     where: { id: user.id },
     data: { type: 'staff', emailVerified: true },
   });
-  // Sign-up auto-signs in; staff will log in from the dashboard instead.
-  await prisma.session.deleteMany({ where: { userId: user.id } });
 
   for (const key of input.roles) {
     const role = await prisma.role.findUniqueOrThrow({ where: { key } });
