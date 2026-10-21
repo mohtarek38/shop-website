@@ -5,7 +5,16 @@ import tseslint from 'typescript-eslint';
 
 /** Shared rules for every TypeScript package in the monorepo. */
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/.next/**', '**/coverage/**', '**/node_modules/**'] },
+  {
+    ignores: [
+      '**/dist/**',
+      '**/.next/**',
+      '**/coverage/**',
+      '**/node_modules/**',
+      // Temporary file tsup writes (and deletes) while building; lint runs in parallel.
+      '**/*.bundled_*.mjs',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

@@ -441,7 +441,7 @@ Each phase ends with a deploy to production (behind basic auth until launch).
 
 ### Phase 2 — Catalog
 
-- [ ] Categories + attribute templates, brands, products, variants
+- [x] Categories + attribute templates, brands, products, variants (API + sample catalog)
 - [ ] Media upload → sharp → R2
 - [ ] Stock locations + stock levels + adjustments (ledger)
 - [ ] CSV/Excel import/export

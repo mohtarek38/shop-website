@@ -9,6 +9,7 @@ import {
 import { STATUS_CODES } from 'node:http';
 import type { ProblemDetails } from '@shop/contracts';
 import type { Request, Response } from 'express';
+import { Prisma } from '../../generated/prisma/client.js';
 import { RequestValidationException } from './zod-validation.js';
 
 const TYPE_BASE = 'https://errors.shop/';
@@ -46,6 +47,11 @@ export class ProblemDetailsFilter implements ExceptionFilter {
       };
     }
 
+    if (exception instanceof Prisma.PrismaClientKnownRequestError) {
+      const mapped = fromPrismaError(exception);
+      if (mapped) return mapped;
+    }
+
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
       const body = exception.getResponse();
@@ -69,6 +75,42 @@ export class ProblemDetailsFilter implements ExceptionFilter {
       title: 'Internal Server Error',
       status: HttpStatus.INTERNAL_SERVER_ERROR,
     };
+  }
+}
+
+/**
+ * Database constraint errors that reach the client as normal 4xx responses, so services
+ * don't need a pre-check for every unique field. Anything else stays a 500.
+ */
+function fromPrismaError(error: Prisma.PrismaClientKnownRequestError): ProblemDetails | null {
+  switch (error.code) {
+    case 'P2002': {
+      // Unique constraint, e.g. a slug or SKU that already exists.
+      const target = error.meta?.target;
+      const fields = Array.isArray(target) ? target.map(String) : [];
+      return {
+        type: `${TYPE_BASE}conflict`,
+        title: 'Conflict',
+        status: HttpStatus.CONFLICT,
+        detail: fields.length ? `Already in use: ${fields.join(', ')}` : 'Already exists',
+        errors: fields.map((path) => ({ path, code: 'already_exists', message: 'already_exists' })),
+      };
+    }
+    case 'P2003': // Foreign key: referenced row missing, or row still referenced.
+      return {
+        type: `${TYPE_BASE}conflict`,
+        title: 'Conflict',
+        status: HttpStatus.CONFLICT,
+        detail: 'Related record is missing or still in use',
+      };
+    case 'P2025': // Record to update/delete not found.
+      return {
+        type: `${TYPE_BASE}not-found`,
+        title: 'Not Found',
+        status: HttpStatus.NOT_FOUND,
+      };
+    default:
+      return null;
   }
 }
 

@@ -5,11 +5,13 @@ import type { Locale } from './locale';
  * Translatable text stored as JSONB (ADR-0010).
  * Arabic is required; English is optional and falls back to Arabic.
  */
-export const localizedTextSchema = z.object({
-  ar: z.string().trim().min(1),
-  en: z.string().trim().min(1).optional(),
-});
-export type LocalizedText = z.infer<typeof localizedTextSchema>;
+// A type alias (not an interface) so it's assignable to Prisma's JSON input type.
+export type LocalizedText = { ar: string; en?: string };
+
+export const localizedTextSchema = z
+  .object({ ar: z.string().trim().min(1), en: z.string().trim().optional() })
+  // A blank English field (as forms send it) means "not translated": falls back to Arabic.
+  .transform(({ ar, en }): LocalizedText => (en ? { ar, en } : { ar }));
 
 /** Optional variant for fields like descriptions, where both languages may be empty. */
 export const optionalLocalizedTextSchema = z.object({

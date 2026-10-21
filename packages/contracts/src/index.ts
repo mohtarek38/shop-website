@@ -1,4 +1,5 @@
 export * from './arabic';
+export * from './catalog';
 export * from './http';
 export * from './identity';
 export * from './locale';
