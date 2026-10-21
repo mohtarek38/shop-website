@@ -72,7 +72,7 @@ export function toBrand(row: BrandRow): Brand {
   };
 }
 
-export function toVariant(row: VariantRow, now = new Date()): ProductVariant {
+export function toVariant(row: VariantRow, available: number, now = new Date()): ProductVariant {
   return {
     id: row.id,
     sku: row.sku,
@@ -83,6 +83,7 @@ export function toVariant(row: VariantRow, now = new Date()): ProductVariant {
     saleStartsAt: row.saleStartsAt?.toISOString() ?? null,
     saleEndsAt: row.saleEndsAt?.toISOString() ?? null,
     currentPrice: currentPrice(row, now),
+    available,
     weightGrams: row.weightGrams,
     lengthMm: row.lengthMm,
     widthMm: row.widthMm,
@@ -96,7 +97,14 @@ export function toVariant(row: VariantRow, now = new Date()): ProductVariant {
 /** Builds public image URLs (MediaService.toAsset). */
 export type AssetFn = (media: MediaRecord) => MediaAsset;
 
-export function toProduct(row: ProductRow, asset: AssetFn): Product {
+/** What product mapping needs from other modules: image URLs and stock per variant. */
+export interface MapContext {
+  asset: AssetFn;
+  /** Available units per variant id (InventoryService.availability). */
+  stock: Map<string, number>;
+}
+
+export function toProduct(row: ProductRow, { asset, stock }: MapContext): Product {
   const now = new Date();
   return {
     id: row.id,
@@ -113,15 +121,19 @@ export function toProduct(row: ProductRow, asset: AssetFn): Product {
     category: { id: row.category.id, slug: row.category.slug, name: text(row.category.name) },
     brand: { id: row.brand.id, slug: row.brand.slug, name: text(row.brand.name) },
     images: row.images.map((image) => ({ ...asset(image.media), alt: textOrNull(image.alt) })),
-    variants: row.variants.map((v) => toVariant(v, now)),
+    variants: row.variants.map((v) => toVariant(v, stock.get(v.id) ?? 0, now)),
     publishedAt: row.publishedAt?.toISOString() ?? null,
     updatedAt: row.updatedAt.toISOString(),
   };
 }
 
-export function toProductListItem(row: ProductListRow, asset: AssetFn): ProductListItem {
+export function toProductListItem(
+  row: ProductListRow,
+  { asset, stock }: MapContext,
+): ProductListItem {
   const now = new Date();
-  const prices = row.variants.filter((v) => v.isActive).map((v) => currentPrice(v, now));
+  const active = row.variants.filter((v) => v.isActive);
+  const prices = active.map((v) => currentPrice(v, now));
   return {
     id: row.id,
     slug: row.slug,
@@ -132,6 +144,7 @@ export function toProductListItem(row: ProductListRow, asset: AssetFn): ProductL
     brand: { id: row.brand.id, name: text(row.brand.name) },
     variantCount: row.variants.length,
     priceFrom: prices.length ? Math.min(...prices) : null,
+    available: active.reduce((sum, v) => sum + Math.max(stock.get(v.id) ?? 0, 0), 0),
     updatedAt: row.updatedAt.toISOString(),
   };
 }

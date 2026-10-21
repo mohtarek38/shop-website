@@ -19,7 +19,14 @@ const listInclude = {
   brand: { select: { id: true, name: true } },
   images: { orderBy: { sortOrder: 'asc' }, take: 1, include: { media: mediaSelect } },
   variants: {
-    select: { price: true, salePrice: true, saleStartsAt: true, saleEndsAt: true, isActive: true },
+    select: {
+      id: true,
+      price: true,
+      salePrice: true,
+      saleStartsAt: true,
+      saleEndsAt: true,
+      isActive: true,
+    },
   },
 } satisfies Prisma.ProductInclude;
 

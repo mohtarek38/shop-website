@@ -2,7 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import type { Category, CategoryAttribute, categoryInputSchema } from '@shop/contracts';
 import type { z } from 'zod';
 import { CategoriesRepository, type CategoryRow } from './categories.repository.js';
-import { alreadyExists, invalidField } from './errors.js';
+import { alreadyExists, invalidField } from '../../shared/http/field-errors.js';
 import { effectiveAttributes, toCategory } from './mappers.js';
 
 type CategoryInput = z.output<typeof categoryInputSchema>;

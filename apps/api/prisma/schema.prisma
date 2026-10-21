@@ -289,7 +289,9 @@ model ProductVariant {
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product     Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  stockLevels StockLevel[]
+  movements   StockMovement[]
 
   @@index([productId])
   @@index([modelNumber])
@@ -342,4 +344,79 @@ model ProductMedia {
   @@unique([productId, mediaId])
   @@index([mediaId])
   @@map("product_media")
+}
+
+// ─── inventory (DATABASE.md §8, ADR-0013) ──────────────────────────────────
+
+model StockLocation {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  code      String   @unique
+  name      Json
+  address   String?
+  /// Exactly one default location (partial unique index in the migration)
+  isDefault Boolean  @default(false) @map("is_default")
+  isActive  Boolean  @default(true) @map("is_active")
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  levels    StockLevel[]
+  movements StockMovement[]
+
+  @@map("stock_location")
+}
+
+/// Stock of one variant at one location. Available = on_hand - reserved.
+model StockLevel {
+  variantId         String   @map("variant_id") @db.Uuid
+  locationId        String   @map("location_id") @db.Uuid
+  onHand            Int      @default(0) @map("on_hand")
+  reserved          Int      @default(0)
+  lowStockThreshold Int?     @map("low_stock_threshold")
+  updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  variant  ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  location StockLocation  @relation(fields: [locationId], references: [id], onDelete: Restrict)
+
+  @@id([variantId, locationId])
+  @@index([locationId])
+  @@map("stock_level")
+}
+
+enum StockMovementType {
+  receive
+  adjust
+  write_off
+  transfer_out
+  transfer_in
+  reserve
+  release
+  fulfil
+  return
+
+  @@map("stock_movement_type")
+}
+
+/// Append-only ledger: every change to stock_level writes a row here in the same transaction.
+model StockMovement {
+  id            String            @id @default(uuid(7)) @db.Uuid
+  variantId     String            @map("variant_id") @db.Uuid
+  locationId    String            @map("location_id") @db.Uuid
+  type          StockMovementType
+  onHandDelta   Int               @map("on_hand_delta")
+  reservedDelta Int               @default(0) @map("reserved_delta")
+  /// On hand after this movement, for easy history reading
+  onHandAfter   Int               @map("on_hand_after")
+  reason        String?
+  referenceType String?           @map("reference_type")
+  referenceId   String?           @map("reference_id")
+  actorId       String?           @map("actor_id") @db.Uuid
+  createdAt     DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  variant  ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  location StockLocation  @relation(fields: [locationId], references: [id], onDelete: Restrict)
+
+  @@index([variantId, createdAt])
+  @@index([locationId, createdAt])
+  @@map("stock_movement")
 }

@@ -11,6 +11,8 @@ import {
   productInputSchema,
 } from '@shop/contracts';
 import type { BrandsService } from '../src/modules/catalog/brands.service.js';
+import type { InventoryService } from '../src/modules/inventory/inventory.service.js';
+import type { PrismaService } from '../src/shared/database/prisma.service.js';
 import type { CategoriesService } from '../src/modules/catalog/categories.service.js';
 import type { ProductsService } from '../src/modules/catalog/products.service.js';
 
@@ -545,4 +547,47 @@ export async function seedSampleCatalog({ categories, brands, products }: Catalo
     brands: brandIds.size,
     products: PRODUCTS.length,
   };
+}
+
+/**
+ * Sample stock at the default location, so the dashboard and shop show realistic states:
+ * mostly in stock, a few low, one sold out. Only runs while no stock has ever been recorded.
+ */
+export async function seedSampleStock(
+  prisma: PrismaService,
+  inventory: InventoryService,
+  actorId: string | null,
+) {
+  if ((await prisma.stockMovement.count()) > 0) return { skipped: true as const };
+  const location = (await inventory.locations()).find((l) => l.isDefault);
+  if (!location) return { skipped: true as const };
+
+  const variants = await prisma.productVariant.findMany({
+    where: { product: { deletedAt: null } },
+    orderBy: [{ product: { slug: 'asc' } }, { sortOrder: 'asc' }],
+    select: { id: true },
+  });
+  // Repeating pattern: 0 = sold out, 1–2 = low (threshold 2), the rest in stock.
+  const quantities = [12, 6, 2, 9, 0, 15, 4, 1, 8, 20, 5, 7];
+  for (const [index, variant] of variants.entries()) {
+    const quantity = quantities[index % quantities.length]!;
+    if (quantity > 0) {
+      await inventory.adjust(
+        {
+          variantId: variant.id,
+          locationId: location.id,
+          type: 'receive',
+          quantity,
+          reason: 'Sample stock',
+        },
+        actorId,
+      );
+    }
+    await inventory.setThreshold({
+      variantId: variant.id,
+      locationId: location.id,
+      lowStockThreshold: 2,
+    });
+  }
+  return { skipped: false as const, variants: variants.length };
 }

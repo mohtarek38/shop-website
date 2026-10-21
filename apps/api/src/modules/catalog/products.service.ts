@@ -12,12 +12,22 @@ import {
   splitAttributes,
 } from '@shop/contracts';
 import type { z } from 'zod';
+import { InventoryService } from '../inventory/index.js';
 import { type MediaRecord, MediaService } from '../media/index.js';
 import { BrandsRepository } from './brands.repository.js';
 import { CategoriesRepository } from './categories.repository.js';
-import { alreadyExists, invalidField, nestedValidationError } from './errors.js';
-import { effectiveAttributes, toProduct, toProductListItem } from './mappers.js';
-import { type ImageWrite, ProductsRepository, type VariantWrite } from './products.repository.js';
+import {
+  alreadyExists,
+  invalidField,
+  nestedValidationError,
+} from '../../shared/http/field-errors.js';
+import { effectiveAttributes, type MapContext, toProduct, toProductListItem } from './mappers.js';
+import {
+  type ImageWrite,
+  type ProductRow,
+  ProductsRepository,
+  type VariantWrite,
+} from './products.repository.js';
 import { buildSearchText } from './search-text.js';
 
 type ProductInput = z.output<typeof productInputSchema>;
@@ -37,10 +47,20 @@ export class ProductsService {
     private readonly categories: CategoriesRepository,
     private readonly brands: BrandsRepository,
     private readonly media: MediaService,
+    private readonly inventory: InventoryService,
   ) {}
 
   /** Public image URLs for a stored image. */
   private readonly asset = (row: MediaRecord) => this.media.toAsset(row);
+
+  /** Image URLs and stock for mapping these variants. */
+  private async context(variantIds: string[]): Promise<MapContext> {
+    return { asset: this.asset, stock: await this.inventory.availability(variantIds) };
+  }
+
+  private async withContext(row: ProductRow) {
+    return toProduct(row, await this.context(row.variants.map((v) => v.id)));
+  }
 
   async list(query: ProductListQuery): Promise<Paginated<ProductListItem>> {
     let categoryIds: string[] | undefined;
@@ -55,8 +75,9 @@ export class ProductsService {
       query.page,
       query.pageSize,
     );
+    const context = await this.context(rows.flatMap((row) => row.variants.map((v) => v.id)));
     return {
-      items: rows.map((row) => toProductListItem(row, this.asset)),
+      items: rows.map((row) => toProductListItem(row, context)),
       page: query.page,
       pageSize: query.pageSize,
       total,
@@ -64,7 +85,7 @@ export class ProductsService {
   }
 
   async get(id: string): Promise<Product> {
-    return toProduct(await this.findOrThrow(id), this.asset);
+    return this.withContext(await this.findOrThrow(id));
   }
 
   /** New products start as drafts; publishing is a separate permission. */
@@ -72,7 +93,7 @@ export class ProductsService {
     const prepared = await this.prepare(input);
     await this.assertAvailable(prepared.product.slug, prepared.variants);
     const row = await this.products.create(prepared.product, prepared.variants, prepared.images);
-    return toProduct(row, this.asset);
+    return this.withContext(row);
   }
 
   async update(id: string, input: ProductInput): Promise<Product> {
@@ -91,7 +112,7 @@ export class ProductsService {
       prepared.variants,
       prepared.images,
     );
-    return toProduct(row, this.asset);
+    return this.withContext(row);
   }
 
   async setStatus(id: string, status: ProductStatus): Promise<Product> {
@@ -101,7 +122,7 @@ export class ProductsService {
     }
     const publishedAt =
       status === 'active' ? (current.publishedAt ?? new Date()) : current.publishedAt;
-    return toProduct(await this.products.setStatus(id, status, publishedAt), this.asset);
+    return this.withContext(await this.products.setStatus(id, status, publishedAt));
   }
 
   async remove(id: string): Promise<void> {

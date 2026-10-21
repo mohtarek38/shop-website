@@ -2,7 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import type { Brand, brandInputSchema } from '@shop/contracts';
 import type { z } from 'zod';
 import { type BrandRow, BrandsRepository } from './brands.repository.js';
-import { alreadyExists } from './errors.js';
+import { alreadyExists } from '../../shared/http/field-errors.js';
 import { toBrand } from './mappers.js';
 
 type BrandInput = z.output<typeof brandInputSchema>;
