@@ -2,7 +2,7 @@ import { Button, cn, Logo } from '@shop/ui';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link, Outlet } from '@tanstack/react-router';
 import { LogOut, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { currentLocale } from '../i18n';
 import { meQuery } from '../lib/api';
@@ -18,6 +18,14 @@ export function AppLayout() {
   const signOut = useSignOut();
   const locale = currentLocale();
   useUserLocale(me);
+
+  // Close the mobile menu with Escape.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (event: KeyboardEvent) => event.key === 'Escape' && setMenuOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
 
   const nav = (
     <nav aria-label={t('app.menu')} className="flex flex-col gap-0.5">
@@ -60,10 +68,15 @@ export function AppLayout() {
 
       {menuOpen && (
         <div className="fixed inset-0 z-50 flex lg:hidden">
-          <div className="w-64 bg-background p-3 shadow-xl">
+          <div role="dialog" aria-modal="true" className="w-64 bg-background p-3 shadow-xl">
             <div className="mb-6 flex items-center justify-between px-2 pt-1">
               <Logo locale={locale} />
-              <button type="button" onClick={() => setMenuOpen(false)} aria-label={t('app.menu')}>
+              <button
+                type="button"
+                onClick={() => setMenuOpen(false)}
+                aria-label={t('app.closeMenu')}
+                autoFocus
+              >
                 <X className="size-5" aria-hidden />
               </button>
             </div>
@@ -71,7 +84,8 @@ export function AppLayout() {
           </div>
           <button
             type="button"
-            aria-label={t('app.menu')}
+            aria-label={t('app.closeMenu')}
+            tabIndex={-1}
             className="flex-1 bg-black/30"
             onClick={() => setMenuOpen(false)}
           />
