@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: shop
+          POSTGRES_PASSWORD: shop
+          POSTGRES_DB: shop
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U shop -d shop"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
+    env:
+      # CI-only values; real secrets never live in the repo.
+      DATABASE_URL: postgresql://shop:shop@localhost:5432/shop
+      DATABASE_URL_TEST: postgresql://shop:shop@localhost:5432/shop_test
+      AUTH_SECRET: ci-only-secret-not-used-anywhere-else-000
+      AUTH_BASE_URL: http://localhost:4000
+      AUTH_TRUSTED_ORIGINS: http://localhost:3000,http://localhost:5173
+      ALLOW_BRAND_PLACEHOLDERS: 'true'
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Format
+        run: pnpm format:check
+
+      - name: Build, lint, typecheck, unit tests
+        run: pnpm turbo run build lint typecheck test
+
+      - name: API e2e tests
+        run: pnpm --filter @shop/api test:e2e
